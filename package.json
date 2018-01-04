@@ -7,7 +7,7 @@
     "language",
     "grammar"
   ],
-  "repository": "https://github.com/atom/language-hsp3",
+  "repository": "https://github.com/honobonosun/language-hsp3",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
