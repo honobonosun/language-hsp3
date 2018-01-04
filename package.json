@@ -1,0 +1,18 @@
+{
+  "name": "language-hsp3",
+  "main": "./lib/language-hsp3",
+  "version": "0.0.0",
+  "description": "HSP3 syntax highlighting and compile task support for ATOM",
+  "keywords": [
+    "language",
+    "grammar"
+  ],
+  "repository": "https://github.com/atom/language-hsp3",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "dependencies": {
+    "iconv-lite": "*"
+  }
+}

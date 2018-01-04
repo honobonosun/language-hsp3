@@ -1,0 +1,721 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"scopeName": "source.hsp3",
+	"name": "HSP3",
+	"fileTypes": [
+		"hsp",
+		"as"
+	],
+	"patterns": [
+		{"include": "#comments"},
+		{"include": "#constants"},
+		{"include": "#label"},
+		{"include": "#namespace"},
+		{"include": "#operators"},
+		{"include": "#preprocessor"},
+		{"include": "#biltin"},
+    {"include": "#librarys"},
+    {"include": "#rule"}
+	],
+	"repository": {
+		"comments": {
+			"patterns": [
+				{	"comment": "一行コメント",
+					"match": "(;|//).*$",
+					"name": "comment.line.hsp3"
+				},
+				{	"comment": "複数行コメント",
+					"begin": "/\\*",
+					"end": "\\*/",
+					"name": "comment.block.hsp3",
+          "patterns": [{"include":"source.hs"}]
+				}
+			]
+		},
+		"constants": {
+			"patterns": [
+				{"include": "#number"},
+				{"include": "#string_quoted_double"},
+				{"include": "#string_braces"}
+			]
+		},
+		"number": {
+			"patterns": [
+				{	"comment": "実数",
+					"match": "\\b(?i)([0-9]+(?:\\.[0-9]+)?E?(\\+|-)?[0-9]*F?)\\b",
+					"captures": {"1":{"name": "constant.numeric.double.hsp3"}}
+				},
+				{	"comment": "10進数",
+					"match": "\\b([0-9]+)\\b",
+					"captures": {"1": {"name": "constant.numeric.decimal.hsp3"}}
+				},
+				{	"comment": "16進数",
+					"match": "((?:\\b0x|\\$)[0-9a-fA-F]+)\\b",
+					"captures": {"1": {"name": "constant.numeric.hex.hsp3"}}
+				},
+        { "comment": "文字コードで円マーク",
+          "match": "'\\\\'",
+          "name": "invalid.illegal.character.not_escape_OnlyOneYenSign.hsp3"
+        },
+				{	"comment": "文字コード",
+          "match": "(?i)('(?:(\\\\(?:n|r|t|\\\"|\\\\)?)|[^\\\\])([^']*)')",
+					"captures": {
+						"1": {"name": "constant.character.hsp3"},
+						"2": {"name": "constant.character.escape.hsp3"},
+						"3": {"name": "invalid.illegal.string_quoted_single.char_over_length.hsp3"}
+					}
+				}
+			]
+		},
+		"string_quoted_double": {
+			"patterns": [
+				{	"comment": "\"hoge\"な文字",
+					"match": "\"((?:\\\\\"|\\\\\\\\|[^\"])*)\"",
+					"captures": {"1": {"patterns": [{"include": "#escaped_char"}]}},
+					"name": "string.quoted.double.hsp3"
+				}
+			]
+		},
+		"string_braces": {
+			"patterns": [
+				{	"comment": "{\"hoge\"}な文字",
+					"begin": "\\{\"",
+					"end": "\"\\}",
+					"patterns": [{"include": "#escaped_char"}],
+					"name": "string.block.hsp3"
+				}
+			]
+		},
+		"escaped_char": {
+			"patterns": [
+				{	"comment": "エスケープ文字",
+					"match": "(?i)\\\\(?:n|r|t|\\\"|\\\\)",
+					"name": "constant.character.escape.hsp3"
+				}
+			]
+		},
+		"label": {
+			"patterns": [
+        { "comment": "ラベル定義",
+          "match": "(?:^\\s*|:\\s*)(\\*(?:\\w|`|@)+)",
+          "captures": {
+            "1": {
+              "name": "markup.heading.define.label.hsp3",
+              "patterns": [
+                { "comment": "アスタリスク",
+                  "match": "^\\*",
+                  "name": "meta.name.label.asterisk.hsp3"
+                },
+                { "comment": "最初が数字なのはオカシイ",
+                  "match": "\\d+(?:\\w|`|@)*",
+                  "name": "invalid.illegal.first_cher_number.hsp3"
+                },
+                { "comment": "＠から始まるシンボル",
+                  "match": "(@)(\\w*)",
+                  "captures": {
+                    "1": {"name": "meta.name.atmark.label.hsp3"},
+                    "2": {"name": "invalid.illegal.not_atmark.hsp3"}
+                  }
+                },
+                { "comment": "60文字以内で、名前空間は付けない。",
+                  "match": "((?:\\w|`){1,60})((?:\\w|`|@)*)",
+                  "captures": {
+                    "1": {"name": "meta.name.label.hsp3"},
+                    "2": {"name": "invalid.illegal.char_over_length.not_atmark.hsp3"}
+                  }
+                }
+              ]
+            }
+          }
+        }
+			]
+		},
+		"namespace": {
+			"patterns": [
+				{	"comment": "名前空間の禁則事項",
+					"match": "(@)(\\d+((?:\\w|`)*))",
+					"captures": {
+						"1": {"name": "support.class.namespace.atmark.hsp3"},
+						"2": {"name": "invalid.illegal.first_cher_number.hsp3"}
+					}
+				},
+				{	"comment": "モジュール名は20文字まで",
+					"match": "(@)((?:\\w|`){1,20}((?:\\w|`|@)*))?",
+					"name": "meta.use.atmark_namespace.hsp3",
+					"captures": {
+						"1": {"name": "support.class.namespace.atmark.hsp3"},
+						"2": {"name": "support.class.namespace.symbol.hsp3"},
+						"3": {"name": "invalid.illegal.name_is_max_over_length.not_atmark.hsp3"}
+					}
+				}
+			]
+		},
+		"operators": {
+			"patterns": [
+				{
+					"match": "<>|%\\=|\\*\\*\\=|~|\\*\\*",
+					"name": "invalid.illegal.operator.hsp3"
+				},
+				{
+					"match": "\\!|<=|>=|==|\\!=|<|>",
+					"name": "keyword.operator.comparison.hsp3"
+				},
+				{
+					"match": "\\+=|-\\=|\\*=|/=|//=|&=|\\|=|\\^=|>>=|<<=",
+					"name": "keyword.operator.assignment.augmented.hsp3"
+				},
+				{
+					"match": "\\+|\\-|\\*|/|%|<<|>>|&|\\||\\^",
+					"name": "keyword.operator.arithmetic.hsp3"
+				},
+				{
+					"match": "=",
+					"name": "keyword.operator.assignment.hsp3"
+				},
+				{
+					"match": ":",
+					"name": "keyword.operator.delimiter.hsp3"
+				}
+			]
+		},
+		"preprocessor": {
+			"patterns": [
+				{	"comment": "include等の色分けが不要なものたち",
+					"match": "(?i:^\\s*(#addition|#ahtmes|#else|#endif|#epack|#if|#ifdef|#ifndef|#include|#pack|#runtime|#undef)\\b)",
+					"captures": {"1": {"name": "keyword.preprocessor.hsp3"}}
+				},
+				{	"comment": "aht",
+					"match": "(?i:^\\s*(#aht)\\s+(class|name|author|ver|exp|icon|iconid)\\b)",
+					"captures": {
+						"1": {"name": "keyword.preprocessor.aht.hsp3"},
+						"2": {"name": "support.constant.aht.set_name.hsp3"}
+					}
+				},
+				{	"comment": "bootopt",
+					"match": "(?i:^\\s*(#bootopt)\\s+(notime|utf8|hsp64)\\b)",
+					"captures": {
+						"1": {"name": "keyword.preprocessor.bootopt.hsp3"},
+						"2": {"name": "support.constant.bootopt.hsp3"}
+					}
+				},
+				{	"comment": "packopt",
+					"match": "(?i:^\\s*(#packopt)\\s+(name|runtime|type|xsize|ysize|hide|orgpath)\\b)",
+					"captures": {
+						"1": {"name": "keyword.preprocessor.hsp3"},
+						"2": {"name": "support.constant.option.packopt.hsp3"}
+					}
+				},
+				{	"comment": "cmpopt",
+					"match": "(?i:^\\s*(#cmpopt)\\s+(ppout|optcode|optinfo|varname|varinit|optprm|skipjpspc|utf8)\\b)",
+					"captures": {
+						"1": {"name": "keyword.preprocessor.cmpopt.hsp3"},
+						"2": {"name": "support.constant.cmpopt.cmpopt.hsp3"}
+					}
+				},
+				{	"comment": "global",
+					"match": "(?i:^\\s*(#global)\\b)",
+					"captures": {"1":{"name":"storage.type.class.global.hsp3"}}
+				},
+				{	"comment": "module",
+					"begin": "(?i:^\\s*(#module)(?:\\s+((?:\\w|\"|\\\\|`|@)+))?)",
+					"beginCaptures": {
+						"1": {"name": "storage.type.class.module.hsp3"},
+						"2": {
+							"name": "meta.name.moudle.hsp3",
+							"patterns": [
+								{	"comment": "module name is double quoted type.",
+									"match": "(\"((?:\\\\\"|[^\"])*)\")",
+									"captures": {
+										"1": {"name": "meta.module_name_double_quoted.hsp3"},
+										"2": {"patterns": [{"include": "#pp_module_name"}]}
+									}
+								},
+								{"include": "#pp_module_name"}
+							]
+						}
+					},
+					"end": "(?<!\\\\)\\n",
+					"patterns": [
+						{"include": "#comments"},
+						{	"comment": "illegal rule, variable symbol name is number only.",
+							"match": "(\\d+)\\b",
+							"captures": {"1": {"name": "invalid.illegal.pp_module_var_number_only.hsp3"}}
+						},
+						{	"comment": "module variable",
+							"match": "(\\d+)?((?:\\w|`){1,60})((?:\\w|@|`)+)?",
+							"captures": {
+								"1": {"name": "invalid.illegal.pp_module_var.hsp3"},
+								"2": {"name": "variable.other.module.hsp3"},
+								"3": {"name": "invalid.illegal.pp_module_var.hsp3"}
+							}
+						}
+					]
+				},
+				{	"comment": "const",
+					"match": "(?i:^\\s*(#const)(?:\\s+(global))?(?:\\s+(double))?\\s+((?:\\w|`|@)+))",
+					"captures": {
+						"1": {"name": "storage.type.const.hsp3"},
+						"2": {"name": "storage.modifiers.global.hsp3"},
+						"3": {"name": "storage.modifiers.double.hsp3"},
+						"4": {"name": "meta.name.const.hsp3",
+									"patterns": [{"include": "#pp_crack_name"}]}
+					}
+				},
+				{	"comment": "enum",
+					"match": "(?i:^\\s*(#enum)(?:\\s+(global))?\\s+((?:\\w|`|@)+))",
+					"captures": {
+						"1": {"name": "storage.type.enum.hsp3"},
+						"2": {"name": "storage.modifiers.global.hsp3"},
+						"3": {"name": "meta.name.enum.hsp3",
+									"patterns": [{"include": "#pp_crack_name"}]}
+					}
+				},
+				{	"comment": "define",
+					"begin": "(?i:^\\s*(#define)(?:\\s+(global))?(?:\\s+(ctype))?\\s+((?:\\w|@|`)+))",
+					"beginCaptures": {
+						"1": {"name": "storage.type.define.hsp3"},
+						"2": {"name": "storage.modifiers.global.hsp3"},
+						"3": {"name": "storage.modifiers.ctype.hsp3"},
+						"4": {"name": "meta.name.define.hsp3",
+									"patterns": [{"include": "#pp_crack_name"}]}
+					},
+					"end": "(?<!\\\\)\\n",
+					"patterns": [
+						{	"include": "#comments"},
+						{	"comment": "$number 仮引数",
+							"match": "%[0-9]+",
+							"name": "variable.other.define.hsp3"
+						},
+						{	"comment": "%から始まる特殊文字",
+							"match": "(?i)%(n|i|o|p|s|c)([0-9]+)?",
+							"name": "constant.language.define.hsp3",
+							"captures": {"2": {"name": "markup.italic.parameter.define.hsp3"}}
+						},
+						{	"comment": "%tXXX マクロタグ",
+							"match": "(?i)(%t(\\d+)?((?:\\w|`){0,56}))((?:\\w|@|`)*)?",
+							"captures": {
+								"1": {"name": "constant.language.tag.define.hsp3"},
+								"2": {"name": "invalid.illegal.tagname_first_cher_number.hsp3"},
+								"3": {"name": "markup.inline.raw.tagname.define.hsp3"},
+								"4": {"name": "invalid.illegal.tagname_is_max_over_length.hsp3"}
+							}
+						},
+						{"include": "#pp_keywords"}
+					]
+				},
+				{	"comment": "deffunc",
+					"begin": "(?i:^\\s*(#defc?func)(?:\\s+(local))?\\s+((?:\\w|`|@)+)(?:\\s+(onexit))?)",
+					"beginCaptures": {
+						"1": {"name": "storage.type.deffunc.hsp3"},
+						"2": {"name": "storage.modifiers.local.hsp3"},
+						"3": {"name": "meta.name.deffunc.hsp3",
+									"patterns": [{"include": "#pp_function_name"}]},
+						"4": {"name": "storage.modifiers.onexit.hsp3"}
+					},
+					"end": "(?<!\\\\)\\n",
+					"patterns": [
+						{"include": "#comments"},
+						{"include": "#pp_user_function_argument"}
+					]
+				},
+				{	"comment": "modfunc",
+					"begin": "(?i:^\\s*(#modc?func)(?:\\s+(local))?\\s+((?:\\w|`|@)+))",
+					"beginCaptures": {
+						"1": {"name": "storage.type.modfunc.hsp3"},
+						"2": {"name": "storage.modifiers.local.hsp3"},
+						"3": {"name": "meta.name.modfunc.hsp3",
+									"patterns": [{"include": "#pp_function_name"}]}
+					},
+					"end": "(?<!\\\\)\\n",
+					"patterns": [
+						{"include": "#comments"},
+						{"include": "#pp_user_function_argument"}
+					]
+				},
+				{	"comment": "modinit",
+					"begin": "(?i:^\\s*(#modinit)\\b)",
+					"beginCaptures": {
+						"1": {"name": "storage.type.modinit.hsp3"}
+					},
+					"end": "(?<!\\\\)\\n",
+					"patterns": [
+						{"include": "#comment"},
+						{"include": "#pp_user_function_argument"}
+					]
+				},
+				{	"comment": "modterm",
+					"begin": "(?i:^\\s*(#modterm)\\b)",
+					"beginCaptures": {"1": {"name": "storage.type.modterm.hsp3"}},
+					"end": "(?<!\\\\)\\n",
+					"patterns": [
+						{	"include": "#comment"},
+						{	"comment": "局地変数",
+							"match": "(?i:\\b(local)\\b)(?:\\s*((?:\\w|`|@)+))?",
+							"captures": {
+								"1": {"name": "storage.type.modterm_local.hsp3"},
+								"2": {
+									"patterns": [
+										{	"comment": "エイリアス名",
+											"match": "(\\d*)((?:\\w|`){1,60})((?:\\w|`|@)*)",
+											"captures": {
+												"1": {"name": "invalid.illegal.modterm.alias.first_cher_number.hsp3"},
+												"2": {"name": "variable.other.modterm.local_alias_name.hsp3"},
+												"3": {"name": "invalid.illegal.modterm.alias.name_is_max_over_length.hsp3"}
+											}
+										}
+									]
+								}
+							}
+						}
+					]
+				},
+				{	"comment": "uselib",
+					"match": "(?i:^\\s*(#uselib)\\b)",
+					"captures": {"1": {"name": "keyword.preprocessor.uselib.hsp3"}}
+				},
+				{	"comment": "func",
+					"begin": "(?i:^\\s*(#c?func)(?:\\s+(global))?\\s+((?:\\w|`|@)+)(?:\\s+(onexit))?\\s+((?!;|//|/\\*)\\S+))",
+					"beginCaptures": {
+						"1": {"name": "storage.type.func.hsp3"},
+						"2": {"name": "storage.modifiers.global.hsp3"},
+						"3": {"name": "meta.name.func.hsp3",
+									"patterns": [{"include": "#pp_crack_name"}]},
+						"4": {"name": "storage.modifiers.onexit.hsp3"},
+						"5": {
+							"patterns": [
+								{	"comment": "HPI形式",
+									"match": "((?:0x)?\\d+)((?:\\w|`|\")+)?",
+									"captures": {
+										"1": {"name": "constant.numeric.hpi_type.export.hsp3"},
+										"2": {"name": "invalid.illegal.not_hpi_type.export.hsp3"}
+									}
+								},
+								{	"comment": "省略記法",
+									"match": "(\\w+)(\"((?:\\\\\"|[^\"])*)\"(\\w+)?)?",
+									"captures": {
+										"1": {"name": "string.lib_export_name.hsp3"},
+										"2": {"name": "invalid.deprecated.export_name.hsp3"}
+									}
+								},
+								{	"comment": "フルネーム記法",
+									"match": "(\"((?:\\\\\"|[^\"])*)\")(\\w+)?",
+									"captures": {
+										"1": {"name": "string.quoted.double.lib_export_fullname.hsp3"},
+										"3": {"name": "invalid.deprecated.export.name.hsp3"}
+									}
+								}
+							]
+						}
+					},
+					"end": "(?<!\\\\)\\n",
+					"patterns": [
+						{"include": "#comments"},
+						{"include": "#number"},
+						{"include": "#pp_func_storage_types"}
+					]
+				},
+				{	"comment": "usecom",
+					"match": "(?i:^\\s*(#usecom)(?:\\s+(global))?\\s+((?:\\w|@|`)+)\\s+(\\S+)(?:\\s+(\\S+))?)",
+					"captures": {
+						"1": {"name": "storage.type.usecom.hsp3"},
+						"2": {"name": "storage.modifiers.global.hsp3"},
+						"3": {"name": "meta.name.usecom.hsp3",
+									"patterns": [{"include": "#pp_crack_name"}]},
+						"4": {"name": "meta.com_interface.iid.hsp3",
+									"patterns": [{"include": "#pp_com_interface_iid"}]},
+						"5": {"name": "meta.com_class.iid.hsp3",
+									"patterns": [{"include": "#pp_com_interface_iid"}]}
+					}
+				},
+				{	"comment": "comfunc",
+					"begin": "(?i:^\\s*(#comfunc)(?:\\s+(global))?\\s+(\\S+)\\s+(\\d+)\\b)",
+					"beginCaptures": {
+						"1": {"name": "storage.type.comfunc.hsp3"},
+						"2": {"name": "storage.modifiers.global.hsp3"},
+						"3": {"name": "meta.name.comfunc.hsp3",
+									"patterns": [{"include": "#pp_crack_name"}]},
+						"4": {"name": "meta.comfunc_import_index.hsp3",
+									"patterns": [{"include": "#number"}]}
+					},
+					"end": "(?<!\\\\)\\n",
+					"patterns": [
+						{	"include": "#comments"},
+						{	"comment": "storage types",
+							"match": "(?i)(int|var|str|wstr|double|float|pval|bmscr|hwnd|hdc|hinst)\\b",
+							"captures": {"1": {"name": "storage.type.comfunc_argtype.hsp3"}}
+						}
+					]
+				},
+				{	"comment": "regcmd",
+					"match": "(?i:^\\s*(#regcmd)\\b)",
+					"captures": {"1": {"name": "keyword.preprocessor.regcmd.hsp3"}}
+				},
+				{	"comment": "cmd",
+					"match": "(?i:^\\s*(#cmd)\\s+((?:\\w|`|@)+)\\s+((?:0x|\\$)?(?:\\w+)))",
+					"captures": {
+						"1": {"name": "keyword.preprocessor.hsp3"},
+						"2": {"name": "meta.name.cmd.hsp3",
+									"patterns": [{"include": "#pp_crack_name"}]},
+						"3": {"patterns": [{"include": "#number"}]}
+					}
+				}
+			]
+		},
+		"pp_module_name": {
+			"patterns": [
+				{	"comment": "モジュール名は数字から始まらない",
+					"match": "\\d+(?:\\w|`|@)*",
+					"name": "invalid.illegal.module.first_cher_number.hsp3"
+				},
+				{	"comment": "module name",
+					"match": "((?:\\w|`){1,20})((?:\\w|`|@)*)",
+					"captures": {
+						"1": {"name": "entity.name.type.module.hsp3"},
+						"2": {"name": "invalid.illegal.module.name_is_max_over_length.not_atmark.hsp3"}
+					}
+				}
+			]
+		},
+		"pp_function_name": {
+			"patterns": [
+				{	"comment": "最初に数字はオカシイ",
+					"match": "\\d+(?:\\w|`|@)*",
+					"name": "invalid.illegal.function.first_cher_number.hsp3"
+				},
+				{	"comment": "ユーザー定義名",
+					"match": "((?:\\w|`){1,60})((?:\\w|`)+)?(@(?:\\w|`)*)?",
+					"captures": {
+						"1": {"name": "entity.name.function.hsp3"},
+						"2": {"name": "invalid.illegal.function.name_is_max_over_length.hsp3"},
+						"3": {"patterns":[{"include":"#namespace"}]}
+					}
+				}
+			]
+		},
+		"pp_user_function_argument": {
+			"patterns": [
+				{	"comment": "引数型にonexitがあるならinvalid.deprecated",
+					"match": "(?i:\\b(onexit)\\b)",
+					"captures": {
+						"1": {"name": "invalid.deprecated.hsp3"}
+					}
+				},
+				{	"comment": "引数型とエイリアス名",
+					"match": "(?i:\\b(int|var|array|str|double|label|local)\\b)(?:\\s*((?:\\w|`|@)+))?",
+					"captures": {
+						"1": {"name": "storage.type.function_prm.hsp3"},
+						"2": {
+							"patterns": [
+								{	"comment": "エイリアス名",
+									"match": "(\\d*)((?:\\w|`){1,60})((?:\\w|`|@)*)",
+									"captures": {
+										"1": {"name": "invalid.illegal.function.first_cher_number.hsp3"},
+										"2": {"name": "variable.other.function.hsp3"},
+										"3": {"name": "invalid.illegal.not_namespace.name_is_max_over_length.hsp3"}
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"pp_crack_name": {
+			"patterns": [
+				{	"comment": "最初に数字はオカシイ",
+					"match": "\\d+(?:\\w|`|@)*",
+					"name": "invalid.illegal.function.first_cher_number.hsp3"
+				},
+				{	"comment": "ユーザー定義名",
+					"match": "((?:\\w|`){1,60})((?:\\w|`)+)?(@(?:\\w|`)*)?",
+					"captures": {
+						"2": {"name": "invalid.illegal.preprocessor.name_is_max_over_length.hsp3"},
+						"3": {"patterns":[{"include":"#namespace"}]}
+					}
+				}
+			]
+		},
+		"pp_func_storage_types": {
+			"patterns": [
+				{	"comment": "funcで使われる引数型",
+					"match": "(?i)(int|var|str|wstr|sptr|wptr|double|float|pval|comobj|bmscr|prefstr|pexinfo|nullptr)\\b",
+					"captures": {"1": {"name": "storage.type.func.hsp3"}}
+				}
+			]
+		},
+		"pp_com_interface_iid": {
+			"patterns": [
+				{	"comment": "COMのインターフェースIID",
+					"match":  "\"\\{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\\}\"",
+					"name": "string.other.com_interface_iid.hsp3"
+				}
+			]
+		},
+		"pp_keywords": {
+			"patterns": [
+				{"include": "#constants"},
+				{"include": "#operators"},
+				{"include": "#biltin"},
+        {"include": "#librarys"},
+        {"include": "#rule"}
+			]
+		},
+		"biltin": {
+			"patterns": [
+				{	"comment": "COMオブジェクト系",
+					"match": "(?i:\\b(comevarg|comevent|delcom|newcom|querycom|sarrayconv|comevdisp)\\b)",
+					"captures": {"1": {"name": "keyword.com_object.hsp3"}}
+				},
+				{	"comment": "HSPシステム制御",
+					"match": "(?i:\\b(assert|logmes)\\b)",
+					"captures": {"1":{"name": "keyword.debug.hsp3"}}
+				},
+				{	"comment": "オブジェクト系",
+					"match": "(?i:\\b(button|chkbox|clrobj|combox|input|listbox|mesbox|objnable|objimage|objmode|objprm|objsel|objsize|objskip)\\b)",
+					"captures": {"1":{"name": "keyword.object.hsp3"}}
+				},
+				{	"comment": "システム変数",
+					"match": "(?i:\\b(cnt|dir_cmdline|dir_cur|dir_desktop|dir_exe|dir_mydoc|dir_sys|dir_tv|dir_win|err|ginfo_accx|ginfo_accy|ginfo_accz|ginfo_act|ginfo_b|ginfo_cx|ginfo_cy|ginfo_dispx|ginfo_dispy|ginfo_g|ginfo_intid|ginfo_mesx|ginfo_mesy|ginfo_mx|ginfo_my|ginfo_newid|ginfo_paluse|ginfo_r|ginfo_sel|ginfo_sizex|ginfo_sizey|ginfo_sx|ginfo_sy|ginfo_vx|ginfo_vy|ginfo_winx|ginfo_winy|ginfo_wx1|ginfo_wx2|ginfo_wy1|ginfo_wy2|hdc|hinstance|hspstat|hspver|hwnd|iparam|looplev|lparam|mousew|mousex|mousey|msgothic|msmincho|notemax|notesize|refdval|refstr|stat|strsize|sublev|thismod|wparam)\\b)",
+					"captures": {"1": {"name": "variable.language.system.hsp3"}}
+				},
+        { "comment": "ファイル制御",
+          "match": "\\b(?i)(bcopy|bload|bsave|chdir|chdpm|delete|dirlist|exist|memfile|mkdir)\\b",
+          "captures": {"1": {"name": "keyword.hsp3"}}
+        },
+				{	"comment": "プログラム制御",
+					"match": "\\b(?i)(exec)\\b",
+					"captures": {"1": {"name": "keyword.hsp3"}}
+				},
+				{	"comment": "control",
+					"match": "\\b(?i)(if|else|repeat|loop|break|continue|foreach|while|wend|for|next|do|until|_break|_continue|switch|case|default|swbreak|swend|wait|await|stop|return|end|run|exgoto|on|goto|gosub)\\b",
+					"captures": {"1": {"name": "keyword.control.hsp3"}}
+				},
+				{	"comment": "oncmd",
+					"match": "(?i:\\b(oncmd)(?:\\s+(goto|gosub))?\\b)",
+					"captures": {
+						"1": {"name": "keyword.control.oncmd.hsp3"},
+						"2": {"name": "markup.inline.raw.oncmd.hsp3"}
+					}
+				},
+				{	"comment": "onkey達",
+					"match": "(?i:\\b(onclick|onerror|onexit|onkey)(?:\\s+(goto|gosub))?\\b)",
+					"captures": {
+						"1": {"name": "keyword.control.oncmds.hsp3"},
+						"2": {"name": "markup.inline.raw.oncmds.hsp3"}
+					}
+				},
+				{	"comment": "マルチメディア制御",
+					"match": "(?i:\\b(mci|mmload|mmpley|mmstop)\\b)",
+					"captures": {"1": {"name": "keyword.multimedia.hsp3"}}
+				},
+				{	"comment": "メモリ管理",
+					"match": "(?i:\\b(comres|ddim|delmod|dim|dimtype|ldim|lpoke|memcpy|memexpand|memset|newlab|newmod|poke|sdim|wpoke|lpeek|peek|wpeek)\\b)",
+					"captures": {"1": {"name": "keyword.memory.hsp3"}}
+				},
+				{	"comment": "alloc",
+					"match": "(?i:\\b(alloc)\\b)",
+					"captures": {"1": {"name": "invalid.deprecated.alloc_is_sdim.hsp3"}}
+				},
+				{	"comment": "基本入出力制御命令",
+					"match": "(?i:\\b(getkey|mcall|mouse|randomize|setease|sortget|sortstr|sortval|stick)\\b)",
+					"captures": {"1": {"name": "keyword.hsp3"}}
+				},
+				{	"comment": "基本入出力関数",
+					"match": "(?i:\\b(abs|absf|stan|callfunc|cos|dirinfo|double|expf|getease|geteasef|gettime|ginfo|int|length|length2|length3|length4|libptr|limit|limitf|logf|objinfo|powf|rnd|sin|sqrt|str|strlen|sysinfo|tan|vartype|varuse|varptr|varsize)\\b)",
+					"captures": {"1": {"name": "keyword.hsp3"}}
+				},
+				{	"comment": "数学定数",
+					"match": "(?i:\\b(M_PI)\\b)",
+					"captures": {"1": {"name": "constant.numeric.hsp3"}}
+				},
+				{	"comment": "文字列操作",
+					"match": "(?i:\\b(cnvstoa|cnvstow|getstr|noteadd|notedel|noteget|noteload|notesave|notesel|noteunsel|split|strrep|cnvatos|cnvwtos|getpath|instr|notefind|noteinfo|strf|strmid|strtrim)\\b)",
+					"captures": {"1": {"name": "keyword.hsp3"}}
+				},
+				{	"comment": "標準定義マクロ",
+					"match": "(?i:\\b(__date__|__file__|__hsp30__|__hspver__|__line__|__time__|_debug|and|deg2rad|font_antialias|font_bold|font_italic|font_normal|font_strikeout|font_underline|gmode_add|gmode_alpha|gmode_gdi|gmode_mem|gmode_pixela|gmode_rgb0|gmode_rgb0alpha|gmode_sub|not|objinfo_bmscr|objinfo_hwnd|objinfo_mode|objmode_guifont|objmode_normal|objmode_usefont|or|rad2deg|screen_fixedsize|screen_frame|screen_normal|screen_palette|screen_tool|xor)\\b)",
+					"captures": {"1": {"name": "constant.numeric.exmacro.hsp3"}}
+				},
+				{	"comment": "特殊代入命令",
+					"match": "(?i:\\b(dup|dupptr|mref)\\b)",
+					"captures": {"1": {"name": "keyword.mref.hsp3"}}
+				},
+				{	"comment": "画面制御命令",
+					"match": "(?i:\\b(axobj|bgscr|bmpsave|boxf|buffer|celdiv|celload|celput|chgdisp|circle|cls|color|dialog|font|gcopy|gmode|grect|groll|grotate|gsel|gsquare|gzoom|hsvcolor|line|mes|palcolor|palette|pget|picload|pos|print|pset|redraw|screen|sendmsg|syscolor|sysfont|title|width|winobj)\\b)",
+					"captures": {"1": {"name": "keyword.graphic.hsp3"}}
+				}
+			]
+		},
+    "rule": {
+      "patterns": [
+        { "comment": "全てのシンボルは数字からは始まらない",
+          "match": "\\d+(?:\\w|`|@)+",
+          "name": "invalid.illegal.rule.first_cher_number.hsp3"
+        },
+        { "comment": "シンボル名は60文字以内",
+          "match": "\\b((?:\\w|`){1,60}((?:\\w|`))?)\\b",
+          "captures": {
+            "1": {"name": "meta.rule.symbol.hsp3"},
+            "2": {"name": "invalid.illegal.rule.symbol.char_over_length.hsp3"}
+          }
+        }
+      ]
+    },
+    "librarys": {
+      "patterns": [
+        {"include": "#lib_user32"},
+        {"include": "#lib_kernel32"},
+        {"include": "#lib_gdi32"},
+        {"include": "#lib_comctr32"}
+      ]
+    },
+    "lib_user32": {
+      "patterns": [
+        { "comment": "user32.as define",
+          "match": "\\b(?i)(__USER32__)\\b",
+          "captures": {"1": {"name": "support.constant.lib.user32.hsp3"}}
+        },
+        { "comment": "user32.as function",
+          "captures": {"1": {"name": "support.function.lib.user32.hsp3"}},
+          "match": "\\b(?i)(ActivateKeyboardLayout|AdjustWindowRect|AdjustWindowRectEx|AllowSetForegroundWindow|AnimateWindow|AnyPopup|AppendMenu|AppendMenuA|AppendMenuW|ArrangeIconicWindows|AttachThreadInput|BeginDeferWindowPos|BeginPaint|BlockInput|BringWindowToTop|BroadcastSystemMessage|BroadcastSystemMessageA|BroadcastSystemMessageW|CallMsgFilter|CallMsgFilterA|CallMsgFilterW|CallNextHookEx|CallWindowProc|CallWindowProcA|CallWindowProcW|CascadeChildWindows|CascadeWindows|ChangeClipboardChain|ChangeDisplaySettings|ChangeDisplaySettingsA|ChangeDisplaySettingsEx|ChangeDisplaySettingsExA|ChangeDisplaySettingsExW|ChangeDisplaySettingsW|ChangeMenu|ChangeMenuA|ChangeMenuW|CharLower|CharLowerA|CharLowerBuff|CharLowerBuffA|CharLowerBuffW|CharLowerW|CharNext|CharNextA|CharNextEx|CharNextExA|CharNextW|CharPrev|CharPrevA|CharPrevEx|CharPrevExA|CharPrevW|CharToOem|CharToOemA|CharToOemBuff|CharToOemBuffA|CharToOemBuffW|CharToOemW|CharUpper|CharUpperA|CharUpperBuff|CharUpperBuffA|CharUpperBuffW|CharUpperW|CheckDlgButton|CheckMenuItem|CheckMenuRadioItem|CheckRadioButton|ChildWindowFromPoint|ChildWindowFromPointEx|ClientToScreen|ClipCursor|CloseClipboard|CloseDesktop|CloseWindow|CloseWindowStation|CopyAcceleratorTable|CopyAcceleratorTableA|CopyAcceleratorTableW|CopyIcon|CopyImage|CopyRect|CountClipboardFormats|CreateAcceleratorTable|CreateAcceleratorTableA|CreateAcceleratorTableW|CreateCaret|CreateCursor|CreateDesktop|CreateDesktopA|CreateDesktopW|CreateDialogIndirectParam|CreateDialogIndirectParamA|CreateDialogIndirectParamW|CreateDialogParam|CreateDialogParamA|CreateDialogParamW|CreateIcon|CreateIconFromResource|CreateIconFromResourceEx|CreateIconIndirect|CreateMDIWindow|CreateMDIWindowA|CreateMDIWindowW|CreateMenu|CreatePopupMenu|CreateWindowEx|CreateWindowExA|CreateWindowExW|CreateWindowStation|CreateWindowStationA|CreateWindowStationW|DdeAbandonTransaction|DdeAccessData|DdeAddData|DdeClientTransaction|DdeCmpStringHandles|DdeConnect|DdeConnectList|DdeCreateDataHandle|DdeCreateStringHandle|DdeCreateStringHandleA|DdeCreateStringHandleW|DdeDisconnect|DdeDisconnectList|DdeEnableCallback|DdeFreeDataHandle|DdeFreeStringHandle|DdeGetData|DdeGetLastError|DdeImpersonateClient|DdeInitialize|DdeInitializeA|DdeInitializeW|DdeKeepStringHandle|DdeNameService|DdePostAdvise|DdeQueryConvInfo|DdeQueryNextServer|DdeQueryString|DdeQueryStringA|DdeQueryStringW|DdeReconnect|DdeSetQualityOfService|DdeSetUserHandle|DdeUnaccessData|DdeUninitialize|DefDlgProc|DefDlgProcA|DefDlgProcW|DefFrameProc|DefFrameProcA|DefFrameProcW|DefMDIChildProc|DefMDIChildProcA|DefMDIChildProcW|DefWindowProc|DefWindowProcA|DefWindowProcW|DeferWindowPos|DeleteMenu|DestroyAcceleratorTable|DestroyCaret|DestroyCursor|DestroyIcon|DestroyMenu|DestroyWindow|DialogBoxIndirectParam|DialogBoxIndirectParamA|DialogBoxIndirectParamW|DialogBoxParam|DialogBoxParamA|DialogBoxParamW|DispatchMessage|DispatchMessageA|DispatchMessageW|DlgDirList|DlgDirListA|DlgDirListComboBox|DlgDirListComboBoxA|DlgDirListComboBoxW|DlgDirListW|DlgDirSelectComboBoxEx|DlgDirSelectComboBoxExA|DlgDirSelectComboBoxExW|DlgDirSelectEx|DlgDirSelectExA|DlgDirSelectExW|DragDetect|DragObject|DrawAnimatedRects|DrawCaption|DrawEdge|DrawFocusRect|DrawFrame|DrawFrameControl|DrawIcon|DrawIconEx|DrawMenuBar|DrawState|DrawStateA|DrawStateW|DrawText|DrawTextA|DrawTextEx|DrawTextExA|DrawTextExW|DrawTextW|EditWndProc|EmptyClipboard|EnableMenuItem|EnableScrollBar|EnableWindow|EndDeferWindowPos|EndDialog|EndMenu|EndPaint|EnumChildWindows|EnumClipboardFormats|EnumDesktopWindows|EnumDesktops|EnumDesktopsA|EnumDesktopsW|EnumDisplayDevices|EnumDisplayDevicesA|EnumDisplayDevicesW|EnumDisplayMonitors|EnumDisplaySettings|EnumDisplaySettingsA|EnumDisplaySettingsEx|EnumDisplaySettingsExA|EnumDisplaySettingsExW|EnumDisplaySettingsW|EnumProps|EnumPropsA|EnumPropsEx|EnumPropsExA|EnumPropsExW|EnumPropsW|EnumThreadWindows|EnumWindowStations|EnumWindowStationsA|EnumWindowStationsW|EnumWindows|EqualRect|ExcludeUpdateRgn|ExitWindowsEx|FillRect|FindWindow|FindWindowA|FindWindowEx|FindWindowExA|FindWindowExW|FindWindowW|FlashWindow|FlashWindowEx|FrameRect|FreeDDElParam|GetActiveWindow|GetAltTabInfo|GetAltTabInfoA|GetAltTabInfoW|GetAncestor|GetAsyncKeyState|GetCapture|GetCaretBlinkTime|GetCaretPos|GetClassInfo|GetClassInfoA|GetClassInfoEx|GetClassInfoExA|GetClassInfoExW|GetClassInfoW|GetClassLong|GetClassLongA|GetClassLongW|GetClassName|GetClassNameA|GetClassNameW|GetClassWord|GetClientRect|GetClipCursor|GetClipboardData|GetClipboardFormatName|GetClipboardFormatNameA|GetClipboardFormatNameW|GetClipboardOwner|GetClipboardSequenceNumber|GetClipboardViewer|GetComboBoxInfo|GetCursor|GetCursorInfo|GetCursorPos|GetDC|GetDCEx|GetDesktopWindow|GetDialogBaseUnits|GetDlgCtrlID|GetDlgItem|GetDlgItemInt|GetDlgItemText|GetDlgItemTextA|GetDlgItemTextW|GetDoubleClickTime|GetFocus|GetForegroundWindow|GetGUIThreadInfo|GetGuiResources|GetIconInfo|GetInputDesktop|GetInputState|GetKBCodePage|GetKeyNameText|GetKeyNameTextA|GetKeyNameTextW|GetKeyState|GetKeyboardLayout|GetKeyboardLayoutList|GetKeyboardLayoutName|GetKeyboardLayoutNameA|GetKeyboardLayoutNameW|GetKeyboardState|GetKeyboardType|GetLastActivePopup|GetLastInputInfo|GetListBoxInfo|GetMenu|GetMenuBarInfo|GetMenuCheckMarkDimensions|GetMenuContextHelpId|GetMenuDefaultItem|GetMenuInfo|GetMenuItemCount|GetMenuItemID|GetMenuItemInfo|GetMenuItemInfoA|GetMenuItemInfoW|GetMenuItemRect|GetMenuState|GetMenuString|GetMenuStringA|GetMenuStringW|GetMessage|GetMessageA|GetMessageExtraInfo|GetMessagePos|GetMessageTime|GetMessageW|GetMonitorInfo|GetMonitorInfoA|GetMonitorInfoW|GetMouseMovePointsEx|GetNextDlgGroupItem|GetNextDlgTabItem|GetOpenClipboardWindow|GetParent|GetPriorityClipboardFormat|GetProcessDefaultLayout|GetProcessWindowStation|GetProp|GetPropA|GetPropW|GetQueueStatus|GetScrollBarInfo|GetScrollInfo|GetScrollPos|GetScrollRange|GetShellWindow|GetSubMenu|GetSysColor|GetSysColorBrush|GetSystemMenu|GetSystemMetrics|GetTabbedTextExtent|GetTabbedTextExtentA|GetTabbedTextExtentW|GetThreadDesktop|GetTitleBarInfo|GetTopWindow|GetUpdateRect|GetUpdateRgn|GetUserObjectInformation|GetUserObjectInformationA|GetUserObjectInformationW|GetUserObjectSecurity|GetWindow|GetWindowContextHelpId|GetWindowDC|GetWindowInfo|GetWindowLong|GetWindowLongA|GetWindowLongW|GetWindowModuleFileName|GetWindowModuleFileNameA|GetWindowModuleFileNameW|GetWindowPlacement|GetWindowRect|GetWindowRgn|GetWindowText|GetWindowTextA|GetWindowTextLength|GetWindowTextLengthA|GetWindowTextLengthW|GetWindowTextW|GetWindowThreadProcessId|GetWindowWord|GrayString|GrayStringA|GrayStringW|HideCaret|HiliteMenuItem|IMPGetIME|IMPGetIMEA|IMPGetIMEW|IMPQueryIME|IMPQueryIMEA|IMPQueryIMEW|IMPSetIME|IMPSetIMEA|IMPSetIMEW|ImpersonateDdeClientWindow|InSendMessage|InSendMessageEx|InflateRect|InsertMenu|InsertMenuA|InsertMenuItem|InsertMenuItemA|InsertMenuItemW|InsertMenuW|IntersectRect|InvalidateRect|InvalidateRgn|InvertRect|IsCharAlpha|IsCharAlphaA|IsCharAlphaNumeric|IsCharAlphaNumericA|IsCharAlphaNumericW|IsCharAlphaW|IsCharLower|IsCharLowerA|IsCharLowerW|IsCharUpper|IsCharUpperA|IsCharUpperW|IsChild|IsClipboardFormatAvailable|IsDialogMessage|IsDialogMessageA|IsDialogMessageW|IsDlgButtonChecked|IsIconic|IsMenu|IsRectEmpty|IsWindow|IsWindowEnabled|IsWindowUnicode|IsWindowVisible|IsZoomed|KillTimer|LoadAccelerators|LoadAcceleratorsA|LoadAcceleratorsW|LoadBitmap|LoadBitmapA|LoadBitmapW|LoadCursor|LoadCursorA|LoadCursorFromFile|LoadCursorFromFileA|LoadCursorFromFileW|LoadCursorW|LoadIcon|LoadIconA|LoadIconW|LoadImage|LoadImageA|LoadImageW|LoadKeyboardLayout|LoadKeyboardLayoutA|LoadKeyboardLayoutW|LoadMenu|LoadMenuA|LoadMenuIndirect|LoadMenuIndirectA|LoadMenuIndirectW|LoadMenuW|LoadString|LoadStringA|LoadStringW|LockSetForegroundWindow|LockWindowUpdate|LockWorkStation|LookupIconIdFromDirectory|LookupIconIdFromDirectoryEx|MapDialogRect|MapVirtualKey|MapVirtualKeyA|MapVirtualKeyEx|MapVirtualKeyExA|MapVirtualKeyExW|MapVirtualKeyW|MapWindowPoints|MenuItemFromPoint|MessageBeep|MessageBox|MessageBoxA|MessageBoxEx|MessageBoxExA|MessageBoxExW|MessageBoxIndirect|MessageBoxIndirectA|MessageBoxIndirectW|MessageBoxW|ModifyMenu|ModifyMenuA|ModifyMenuW|MonitorFromPoint|MonitorFromRect|MonitorFromWindow|MoveWindow|MsgWaitForMultipleObjects|MsgWaitForMultipleObjectsEx|NotifyWinEvent|OemKeyScan|OemToChar|OemToCharA|OemToCharBuff|OemToCharBuffA|OemToCharBuffW|OemToCharW|OffsetRect|OpenClipboard|OpenDesktop|OpenDesktopA|OpenDesktopW|OpenIcon|OpenInputDesktop|OpenWindowStation|OpenWindowStationA|OpenWindowStationW|PackDDElParam|PaintDesktop|PeekMessage|PeekMessageA|PeekMessageW|PostMessage|PostMessageA|PostMessageW|PostQuitMessage|PostThreadMessage|PostThreadMessageA|PostThreadMessageW|PtInRect|RealChildWindowFromPoint|RealGetWindowClass|RealGetWindowClassA|RealGetWindowClassW|RedrawWindow|RegisterClass|RegisterClassA|RegisterClassEx|RegisterClassExA|RegisterClassExW|RegisterClassW|RegisterClipboardFormat|RegisterClipboardFormatA|RegisterClipboardFormatW|RegisterDeviceNotification|RegisterDeviceNotificationA|RegisterDeviceNotificationW|RegisterHotKey|RegisterWindowMessage|RegisterWindowMessageA|RegisterWindowMessageW|ReleaseCapture|ReleaseDC|RemoveMenu|RemoveProp|RemovePropA|RemovePropW|ReplyMessage|ReuseDDElParam|ScreenToClient|ScrollDC|ScrollWindow|ScrollWindowEx|SendDlgItemMessage|SendDlgItemMessageA|SendDlgItemMessageW|SendIMEMessageEx|SendIMEMessageExA|SendIMEMessageExW|SendInput|SendMessage|SendMessageA|SendMessageCallback|SendMessageCallbackA|SendMessageCallbackW|SendMessageTimeout|SendMessageTimeoutA|SendMessageTimeoutW|SendMessageW|SendNotifyMessage|SendNotifyMessageA|SendNotifyMessageW|SetActiveWindow|SetCapture|SetCaretBlinkTime|SetCaretPos|SetClassLong|SetClassLongA|SetClassLongW|SetClassWord|SetClipboardData|SetClipboardViewer|SetCursor|SetCursorPos|SetDebugErrorLevel|SetDeskWallpaper|SetDlgItemInt|SetDlgItemText|SetDlgItemTextA|SetDlgItemTextW|SetDoubleClickTime|SetFocus|SetForegroundWindow|SetKeyboardState|SetLastErrorEx|SetLayeredWindowAttributes|SetMenu|SetMenuContextHelpId|SetMenuDefaultItem|SetMenuInfo|SetMenuItemBitmaps|SetMenuItemInfo|SetMenuItemInfoA|SetMenuItemInfoW|SetMessageExtraInfo|SetMessageQueue|SetParent|SetProcessDefaultLayout|SetProcessWindowStation|SetProp|SetPropA|SetPropW|SetRect|SetRectEmpty|SetScrollInfo|SetScrollPos|SetScrollRange|SetShellWindow|SetSysColors|SetSystemCursor|SetThreadDesktop|SetTimer|SetUserObjectInformation|SetUserObjectInformationA|SetUserObjectInformationW|SetUserObjectSecurity|SetWinEventHook|SetWindowContextHelpId|SetWindowLong|SetWindowLongA|SetWindowLongW|SetWindowPlacement|SetWindowPos|SetWindowRgn|SetWindowText|SetWindowTextA|SetWindowTextW|SetWindowWord|SetWindowsHook|SetWindowsHookA|SetWindowsHookEx|SetWindowsHookExA|SetWindowsHookExW|SetWindowsHookW|ShowCaret|ShowCursor|ShowOwnedPopups|ShowScrollBar|ShowWindow|ShowWindowAsync|SubtractRect|SwapMouseButton|SwitchDesktop|SystemParametersInfo|SystemParametersInfoA|SystemParametersInfoW|TabbedTextOut|TabbedTextOutA|TabbedTextOutW|TileChildWindows|TileWindows|ToAscii|ToAsciiEx|ToUnicode|ToUnicodeEx|TrackMouseEvent|TrackPopupMenu|TrackPopupMenuEx|TranslateAccelerator|TranslateAcceleratorA|TranslateAcceleratorW|TranslateMDISysAccel|TranslateMessage|UnhookWinEvent|UnhookWindowsHook|UnhookWindowsHookEx|UnionRect|UnloadKeyboardLayout|UnpackDDElParam|UnregisterClass|UnregisterClassA|UnregisterClassW|UnregisterDeviceNotification|UnregisterHotKey|UpdateLayeredWindow|UpdateWindow|UserHandleGrantAccess|ValidateRect|ValidateRgn|VkKeyScan|VkKeyScanA|VkKeyScanEx|VkKeyScanExA|VkKeyScanExW|VkKeyScanW|WINNLSEnableIME|WINNLSGetEnableStatus|WINNLSGetIMEHotkey|WaitForInputIdle|WaitMessage|Win32PoolAllocationStats|WinHelp|WinHelpA|WinHelpW|WindowFromDC|WindowFromPoint|keybd_event|mouse_event|wsprintf|wsprintfA|wsprintfW|wvsprintf|wvsprintfA|wvsprintfW)\\b"
+        }
+      ]
+    },
+    "lib_kernel32": {
+      "patterns": [
+        { "comment": "kernel32.as define",
+          "match": "\\b(?i)(__KERNEL32__)\\b",
+          "captures": {"1": {"name": "support.constant.lib.kernel32.hsp3"}}
+        },
+        { "comment": "kernel32.as function",
+          "captures": {"1": {"name": "support.function.lib.kernel32.hsp3"}},
+          "match": "\\b(?i)(AddAtom|AddAtomA|AddAtomW|AllocConsole|AllocateUserPhysicalPages|AreFileApisANSI|AssignProcessToJobObject|BackupRead|BackupSeek|BackupWrite|Beep|BeginUpdateResource|BeginUpdateResourceA|BeginUpdateResourceW|BindIoCompletionCallback|BuildCommDCB|BuildCommDCBA|BuildCommDCBAndTimeouts|BuildCommDCBAndTimeoutsA|BuildCommDCBAndTimeoutsW|BuildCommDCBW|CallNamedPipe|CallNamedPipeA|CallNamedPipeW|CancelDeviceWakeupRequest|CancelIo|CancelTimerQueueTimer|CancelWaitableTimer|ChangeTimerQueueTimer|ClearCommBreak|ClearCommError|CloseHandle|CommConfigDialog|CommConfigDialogA|CommConfigDialogW|CompareFileTime|CompareString|CompareStringA|CompareStringW|ConnectNamedPipe|ContinueDebugEvent|ConvertDefaultLocale|ConvertThreadToFiber|CopyFile|CopyFileA|CopyFileEx|CopyFileExA|CopyFileExW|CopyFileW|CreateConsoleScreenBuffer|CreateDirectory|CreateDirectoryA|CreateDirectoryEx|CreateDirectoryExA|CreateDirectoryExW|CreateDirectoryW|CreateEvent|CreateEventA|CreateEventW|CreateFiber|CreateFile|CreateFileA|CreateFileMapping|CreateFileMappingA|CreateFileMappingW|CreateFileW|CreateHardLink|CreateHardLinkA|CreateHardLinkW|CreateIoCompletionPort|CreateJobObject|CreateJobObjectA|CreateJobObjectW|CreateMailslot|CreateMailslotA|CreateMailslotW|CreateMutex|CreateMutexA|CreateMutexW|CreateNamedPipe|CreateNamedPipeA|CreateNamedPipeW|CreatePipe|CreateProcess|CreateProcessA|CreateProcessW|CreateRemoteThread|CreateSemaphore|CreateSemaphoreA|CreateSemaphoreW|CreateTapePartition|CreateThread|CreateTimerQueue|CreateTimerQueueTimer|CreateToolhelp32Snapshot|CreateWaitableTimer|CreateWaitableTimerA|CreateWaitableTimerW|DebugActiveProcess|DebugBreak|DefineDosDevice|DefineDosDeviceA|DefineDosDeviceW|DeleteAtom|DeleteCriticalSection|DeleteFiber|DeleteFile|DeleteFileA|DeleteFileW|DeleteTimerQueue|DeleteTimerQueueEx|DeleteTimerQueueTimer|DeleteVolumeMountPoint|DeleteVolumeMountPointA|DeleteVolumeMountPointW|DeviceIoControl|DisableThreadLibraryCalls|DisconnectNamedPipe|DnsHostnameToComputerName|DnsHostnameToComputerNameA|DnsHostnameToComputerNameW|DosDateTimeToFileTime|DuplicateHandle|EndUpdateResource|EndUpdateResourceA|EndUpdateResourceW|EnterCriticalSection|EnumCalendarInfo|EnumCalendarInfoA|EnumCalendarInfoEx|EnumCalendarInfoExA|EnumCalendarInfoExW|EnumCalendarInfoW|EnumDateFormats|EnumDateFormatsA|EnumDateFormatsEx|EnumDateFormatsExA|EnumDateFormatsExW|EnumDateFormatsW|EnumLanguageGroupLocales|EnumLanguageGroupLocalesA|EnumLanguageGroupLocalesW|EnumResourceLanguages|EnumResourceLanguagesA|EnumResourceLanguagesW|EnumResourceNames|EnumResourceNamesA|EnumResourceNamesW|EnumResourceTypes|EnumResourceTypesA|EnumResourceTypesW|EnumSystemCodePages|EnumSystemCodePagesA|EnumSystemCodePagesW|EnumSystemLanguageGroups|EnumSystemLanguageGroupsA|EnumSystemLanguageGroupsW|EnumSystemLocales|EnumSystemLocalesA|EnumSystemLocalesW|EnumTimeFormats|EnumTimeFormatsA|EnumTimeFormatsW|EnumUILanguages|EnumUILanguagesA|EnumUILanguagesW|EraseTape|EscapeCommFunction|ExitProcess|ExitThread|ExpandEnvironmentStrings|ExpandEnvironmentStringsA|ExpandEnvironmentStringsW|FatalAppExit|FatalAppExitA|FatalAppExitW|FatalExit|FileTimeToDosDateTime|FileTimeToLocalFileTime|FileTimeToSystemTime|FillConsoleOutputAttribute|FillConsoleOutputCharacter|FillConsoleOutputCharacterA|FillConsoleOutputCharacterW|FindAtom|FindAtomA|FindAtomW|FindClose|FindCloseChangeNotification|FindFirstChangeNotification|FindFirstChangeNotificationA|FindFirstChangeNotificationW|FindFirstFile|FindFirstFileA|FindFirstFileEx|FindFirstFileExA|FindFirstFileExW|FindFirstFileW|FindFirstVolume|FindFirstVolumeA|FindFirstVolumeMountPoint|FindFirstVolumeMountPointA|FindFirstVolumeMountPointW|FindFirstVolumeW|FindNextChangeNotification|FindNextFile|FindNextFileA|FindNextFileW|FindNextVolume|FindNextVolumeA|FindNextVolumeMountPoint|FindNextVolumeMountPointA|FindNextVolumeMountPointW|FindNextVolumeW|FindResource|FindResourceA|FindResourceEx|FindResourceExA|FindResourceExW|FindResourceW|FindVolumeClose|FindVolumeMountPointClose|FlushConsoleInputBuffer|FlushFileBuffers|FlushInstructionCache|FlushViewOfFile|FoldString|FoldStringA|FoldStringW|FormatMessage|FormatMessageA|FormatMessageW|FreeConsole|FreeEnvironmentStrings|FreeEnvironmentStringsA|FreeEnvironmentStringsW|FreeLibrary|FreeLibraryAndExitThread|FreeResource|FreeUserPhysicalPages|GenerateConsoleCtrlEvent|GetACP|GetAtomName|GetAtomNameA|GetAtomNameW|GetBinaryType|GetBinaryTypeA|GetBinaryTypeW|GetCPInfo|GetCPInfoEx|GetCPInfoExA|GetCPInfoExW|GetCalendarInfo|GetCalendarInfoA|GetCalendarInfoW|GetCommConfig|GetCommMask|GetCommModemStatus|GetCommProperties|GetCommState|GetCommTimeouts|GetCommandLine|GetCommandLineA|GetCommandLineW|GetCompressedFileSize|GetCompressedFileSizeA|GetCompressedFileSizeW|GetComputerName|GetComputerNameA|GetComputerNameEx|GetComputerNameExA|GetComputerNameExW|GetComputerNameW|GetConsoleCP|GetConsoleCursorInfo|GetConsoleMode|GetConsoleOutputCP|GetConsoleScreenBufferInfo|GetConsoleTitle|GetConsoleTitleA|GetConsoleTitleW|GetCurrencyFormat|GetCurrencyFormatA|GetCurrencyFormatW|GetCurrentDirectory|GetCurrentDirectoryA|GetCurrentDirectoryW|GetCurrentProcess|GetCurrentProcessId|GetCurrentThread|GetCurrentThreadId|GetDateFormat|GetDateFormatA|GetDateFormatW|GetDefaultCommConfig|GetDefaultCommConfigA|GetDefaultCommConfigW|GetDevicePowerState|GetDiskFreeSpace|GetDiskFreeSpaceA|GetDiskFreeSpaceEx|GetDiskFreeSpaceExA|GetDiskFreeSpaceExW|GetDiskFreeSpaceW|GetDriveType|GetDriveTypeA|GetDriveTypeW|GetEnvironmentStrings|GetEnvironmentStringsA|GetEnvironmentStringsW|GetEnvironmentVariable|GetEnvironmentVariableA|GetEnvironmentVariableW|GetExitCodeProcess|GetExitCodeThread|GetFileAttributes|GetFileAttributesA|GetFileAttributesEx|GetFileAttributesExA|GetFileAttributesExW|GetFileAttributesW|GetFileInformationByHandle|GetFileSize|GetFileSizeEx|GetFileTime|GetFileType|GetFullPathName|GetFullPathNameA|GetFullPathNameW|GetHandleInformation|GetLargestConsoleWindowSize|GetLastError|GetLocalTime|GetLocaleInfo|GetLocaleInfoA|GetLocaleInfoW|GetLogicalDriveStrings|GetLogicalDriveStringsA|GetLogicalDriveStringsW|GetLogicalDrives|GetLongPathName|GetLongPathNameA|GetLongPathNameW|GetMailslotInfo|GetModuleFileName|GetModuleFileNameA|GetModuleFileNameW|GetModuleHandle|GetModuleHandleA|GetModuleHandleW|GetNamedPipeHandleState|GetNamedPipeHandleStateA|GetNamedPipeHandleStateW|GetNamedPipeInfo|GetNumberFormat|GetNumberFormatA|GetNumberFormatW|GetNumberOfConsoleInputEvents|GetNumberOfConsoleMouseButtons|GetOEMCP|GetOverlappedResult|GetPriorityClass|GetPrivateProfileInt|GetPrivateProfileIntA|GetPrivateProfileIntW|GetPrivateProfileSection|GetPrivateProfileSectionA|GetPrivateProfileSectionNames|GetPrivateProfileSectionNamesA|GetPrivateProfileSectionNamesW|GetPrivateProfileSectionW|GetPrivateProfileString|GetPrivateProfileStringA|GetPrivateProfileStringW|GetPrivateProfileStruct|GetPrivateProfileStructA|GetPrivateProfileStructW|GetProcAddress|GetProcessAffinityMask|GetProcessHeap|GetProcessHeaps|GetProcessIoCounters|GetProcessPriorityBoost|GetProcessShutdownParameters|GetProcessTimes|GetProcessVersion|GetProcessWorkingSetSize|GetProfileInt|GetProfileIntA|GetProfileIntW|GetProfileSection|GetProfileSectionA|GetProfileSectionW|GetProfileString|GetProfileStringA|GetProfileStringW|GetQueuedCompletionStatus|GetShortPathName|GetShortPathNameA|GetShortPathNameW|GetStartupInfo|GetStartupInfoA|GetStartupInfoW|GetStdHandle|GetStringType|GetStringTypeA|GetStringTypeEx|GetStringTypeExA|GetStringTypeExW|GetStringTypeW|GetSystemDefaultLCID|GetSystemDefaultLangID|GetSystemDefaultUILanguage|GetSystemDirectory|GetSystemDirectoryA|GetSystemDirectoryW|GetSystemInfo|GetSystemPowerStatus|GetSystemTime|GetSystemTimeAdjustment|GetSystemTimeAsFileTime|GetSystemWindowsDirectory|GetSystemWindowsDirectoryA|GetSystemWindowsDirectoryW|GetTapeParameters|GetTapePosition|GetTapeStatus|GetTempFileName|GetTempFileNameA|GetTempFileNameW|GetTempPath|GetTempPathA|GetTempPathW|GetThreadContext|GetThreadLocale|GetThreadPriority|GetThreadPriorityBoost|GetThreadSelectorEntry|GetThreadTimes|GetTickCount|GetTimeFormat|GetTimeFormatA|GetTimeFormatW|GetTimeZoneInformation|GetUserDefaultLCID|GetUserDefaultLangID|GetUserDefaultUILanguage|GetVersion|GetVersionEx|GetVersionExA|GetVersionExW|GetVolumeInformation|GetVolumeInformationA|GetVolumeInformationW|GetVolumeNameForVolumeMountPoint|GetVolumeNameForVolumeMountPointA|GetVolumeNameForVolumeMountPointW|GetVolumePathName|GetVolumePathNameA|GetVolumePathNameW|GetWindowsDirectory|GetWindowsDirectoryA|GetWindowsDirectoryW|GetWriteWatch|GlobalAddAtom|GlobalAddAtomA|GlobalAddAtomW|GlobalAlloc|GlobalCompact|GlobalDeleteAtom|GlobalFindAtom|GlobalFindAtomA|GlobalFindAtomW|GlobalFix|GlobalFlags|GlobalFree|GlobalGetAtomName|GlobalGetAtomNameA|GlobalGetAtomNameW|GlobalHandle|GlobalLock|GlobalMemoryStatus|GlobalMemoryStatusEx|GlobalReAlloc|GlobalSize|GlobalUnWire|GlobalUnfix|GlobalUnlock|GlobalWire|Heap32First|Heap32ListFirst|Heap32ListNext|Heap32Next|HeapAlloc|HeapCompact|HeapCreate|HeapDestroy|HeapFree|HeapLock|HeapReAlloc|HeapSize|HeapUnlock|HeapValidate|HeapWalk|InitAtomTable|InitializeCriticalSection|InitializeCriticalSectionAndSpinCount|InterlockedCompareExchange|InterlockedDecrement|InterlockedExchange|InterlockedExchangeAdd|InterlockedIncrement|IsBadCodePtr|IsBadHugeReadPtr|IsBadHugeWritePtr|IsBadReadPtr|IsBadStringPtr|IsBadStringPtrA|IsBadStringPtrW|IsBadWritePtr|IsDBCSLeadByte|IsDBCSLeadByteEx|IsDebuggerPresent|IsProcessorFeaturePresent|IsSystemResumeAutomatic|IsValidCodePage|IsValidLanguageGroup|IsValidLocale|LCMapString|LCMapStringA|LCMapStringW|LeaveCriticalSection|LoadLibrary|LoadLibraryA|LoadLibraryEx|LoadLibraryExA|LoadLibraryExW|LoadLibraryW|LoadModule|LoadResource|LocalAlloc|LocalCompact|LocalFileTimeToFileTime|LocalFlags|LocalFree|LocalHandle|LocalLock|LocalReAlloc|LocalShrink|LocalSize|LocalUnlock|LockFile|LockFileEx|LockResource|MapUserPhysicalPages|MapUserPhysicalPagesScatter|MapViewOfFile|MapViewOfFileEx|Module32First|Module32FirstW|Module32Next|Module32NextW|MoveFile|MoveFileA|MoveFileEx|MoveFileExA|MoveFileExW|MoveFileW|MoveFileWithProgress|MoveFileWithProgressA|MoveFileWithProgressW|MulDiv|MultiByteToWideChar|OpenEvent|OpenEventA|OpenEventW|OpenFile|OpenFileMapping|OpenFileMappingA|OpenFileMappingW|OpenJobObject|OpenJobObjectA|OpenJobObjectW|OpenMutex|OpenMutexA|OpenMutexW|OpenProcess|OpenSemaphore|OpenSemaphoreA|OpenSemaphoreW|OpenThread|OpenWaitableTimer|OpenWaitableTimerA|OpenWaitableTimerW|OutputDebugString|OutputDebugStringA|OutputDebugStringW|PeekConsoleInput|PeekConsoleInputA|PeekConsoleInputW|PeekNamedPipe|PostQueuedCompletionStatus|PrepareTape|Process32First|Process32FirstW|Process32Next|Process32NextW|ProcessIdToSessionId|PulseEvent|PurgeComm|QueryDosDevice|QueryDosDeviceA|QueryDosDeviceW|QueryInformationJobObject|QueryPerformanceCounter|QueryPerformanceFrequency|QueueUserAPC|QueueUserWorkItem|RaiseException|ReadConsole|ReadConsoleA|ReadConsoleInput|ReadConsoleInputA|ReadConsoleInputW|ReadConsoleOutput|ReadConsoleOutputA|ReadConsoleOutputAttribute|ReadConsoleOutputCharacter|ReadConsoleOutputCharacterA|ReadConsoleOutputCharacterW|ReadConsoleOutputW|ReadConsoleW|ReadDirectoryChangesW|ReadFile|ReadFileEx|ReadFileScatter|ReadProcessMemory|RegisterWaitForSingleObject|RegisterWaitForSingleObjectEx|ReleaseMutex|ReleaseSemaphore|RemoveDirectory|RemoveDirectoryA|RemoveDirectoryW|ReplaceFile|ReplaceFileA|ReplaceFileW|RequestDeviceWakeup|RequestWakeupLatency|ResetEvent|ResetWriteWatch|ResumeThread|RtlFillMemory|RtlMoveMemory|RtlUnwind|RtlZeroMemory|ScrollConsoleScreenBuffer|ScrollConsoleScreenBufferA|ScrollConsoleScreenBufferW|SearchPath|SearchPathA|SearchPathW|SetCalendarInfo|SetCalendarInfoA|SetCalendarInfoW|SetCommBreak|SetCommConfig|SetCommMask|SetCommState|SetCommTimeouts|SetComputerName|SetComputerNameA|SetComputerNameEx|SetComputerNameExA|SetComputerNameExW|SetComputerNameW|SetConsoleActiveScreenBuffer|SetConsoleCP|SetConsoleCtrlHandler|SetConsoleCursor|SetConsoleCursorInfo|SetConsoleCursorPosition|SetConsoleMode|SetConsoleOutputCP|SetConsoleScreenBufferSize|SetConsoleTextAttribute|SetConsoleTitle|SetConsoleTitleA|SetConsoleTitleW|SetConsoleWindowInfo|SetCriticalSectionSpinCount|SetCurrentDirectory|SetCurrentDirectoryA|SetCurrentDirectoryW|SetDefaultCommConfig|SetDefaultCommConfigA|SetDefaultCommConfigW|SetEndOfFile|SetEnvironmentVariable|SetEnvironmentVariableA|SetEnvironmentVariableW|SetErrorMode|SetEvent|SetFileApisToANSI|SetFileApisToOEM|SetFileAttributes|SetFileAttributesA|SetFileAttributesW|SetFilePointer|SetFilePointerEx|SetFileTime|SetHandleCount|SetHandleInformation|SetInformationJobObject|SetLastError|SetLocalTime|SetLocaleInfo|SetLocaleInfoA|SetLocaleInfoW|SetMailslotInfo|SetMessageWaitingIndicator|SetNamedPipeHandleState|SetPriorityClass|SetProcessAffinityMask|SetProcessPriorityBoost|SetProcessShutdownParameters|SetProcessWorkingSetSize|SetStdHandle|SetSystemPowerState|SetSystemTime|SetSystemTimeAdjustment|SetTapeParameters|SetTapePosition|SetThreadAffinityMask|SetThreadContext|SetThreadExecutionState|SetThreadIdealProcessor|SetThreadLocale|SetThreadPriority|SetThreadPriorityBoost|SetTimeZoneInformation|SetTimerQueueTimer|SetUnhandledExceptionFilter|SetVolumeLabel|SetVolumeLabelA|SetVolumeLabelW|SetVolumeMountPoint|SetVolumeMountPointA|SetVolumeMountPointW|SetWaitableTimer|SetupComm|SignalObjectAndWait|SizeofResource|Sleep|SleepEx|SuspendThread|SwitchToFiber|SwitchToThread|SystemTimeToFileTime|SystemTimeToTzSpecificLocalTime|TerminateJobObject|TerminateProcess|TerminateThread|Thread32First|Thread32Next|TlsAlloc|TlsFree|TlsGetValue|TlsSetValue|Toolhelp32ReadProcessMemory|TransactNamedPipe|TransmitCommChar|TryEnterCriticalSection|UnhandledExceptionFilter|UnlockFile|UnlockFileEx|UnmapViewOfFile|UnregisterWait|UnregisterWaitEx|UpdateResource|UpdateResourceA|UpdateResourceW|VerLanguageName|VerLanguageNameA|VerLanguageNameW|VerSetConditionMask|VerifyVersionInfo|VerifyVersionInfoA|VerifyVersionInfoW|VirtualAlloc|VirtualAllocEx|VirtualFree|VirtualFreeEx|VirtualLock|VirtualProtect|VirtualProtectEx|VirtualQuery|VirtualQueryEx|VirtualUnlock|WaitCommEvent|WaitForDebugEvent|WaitForMultipleObjects|WaitForMultipleObjectsEx|WaitForSingleObject|WaitForSingleObjectEx|WaitNamedPipe|WaitNamedPipeA|WaitNamedPipeW|WideCharToMultiByte|WinExec|WriteConsole|WriteConsoleA|WriteConsoleInput|WriteConsoleInputA|WriteConsoleInputW|WriteConsoleOutput|WriteConsoleOutputA|WriteConsoleOutputAttribute|WriteConsoleOutputCharacter|WriteConsoleOutputCharacterA|WriteConsoleOutputCharacterW|WriteConsoleOutputW|WriteConsoleW|WriteFile|WriteFileEx|WriteFileGather|WritePrivateProfileSection|WritePrivateProfileSectionA|WritePrivateProfileSectionW|WritePrivateProfileString|WritePrivateProfileStringA|WritePrivateProfileStringW|WritePrivateProfileStruct|WritePrivateProfileStructA|WritePrivateProfileStructW|WriteProcessMemory|WriteProfileSection|WriteProfileSectionA|WriteProfileSectionW|WriteProfileString|WriteProfileStringA|WriteProfileStringW|WriteTapemark|_hread|_hwrite|_lclose|_lcreat|_llseek|_lopen|_lread|_lwrite|lstrcat|lstrcatA|lstrcatW|lstrcmp|lstrcmpA|lstrcmpW|lstrcmpi|lstrcmpiA|lstrcmpiW|lstrcpy|lstrcpyA|lstrcpyW|lstrcpyn|lstrcpynA|lstrcpynW|lstrlen|lstrlenA|lstrlenW)\\b"
+        }
+      ]
+    },
+    "lib_gdi32": {
+      "patterns": [
+        { "comment": "gdi32.as define",
+          "match": "\\b(?i)(__GDI32__)\\b",
+          "captures": {"1": {"name": "support.constant.lib.gdi32.hsp3"}}
+        },
+        { "comment": "gdi32.as function",
+          "captures": {"1": {"name": "support.function.lib.gdi32.hsp3"}},
+          "match": "\\b(?i)(AbortDoc|AbortPath|AddFontMemResourceEx|AddFontResource|AddFontResourceA|AddFontResourceEx|AddFontResourceExA|AddFontResourceExW|AddFontResourceW|AngleArc|AnimatePalette|Arc|ArcTo|BeginPath|BitBlt|CancelDC|CheckColorsInGamut|ChoosePixelFormat|Chord|CloseEnhMetaFile|CloseFigure|CloseMetaFile|ColorCorrectPalette|ColorMatchToTarget|CombineRgn|CombineTransform|CopyEnhMetaFile|CopyEnhMetaFileA|CopyEnhMetaFileW|CopyMetaFile|CopyMetaFileA|CopyMetaFileW|CreateBitmap|CreateBitmapIndirect|CreateBrushIndirect|CreateColorSpace|CreateColorSpaceA|CreateColorSpaceW|CreateCompatibleBitmap|CreateCompatibleDC|CreateDC|CreateDCA|CreateDCW|CreateDIBPatternBrush|CreateDIBPatternBrushPt|CreateDIBSection|CreateDIBitmap|CreateDiscardableBitmap|CreateEllipticRgn|CreateEllipticRgnIndirect|CreateEnhMetaFile|CreateEnhMetaFileA|CreateEnhMetaFileW|CreateFont|CreateFontA|CreateFontIndirect|CreateFontIndirectA|CreateFontIndirectEx|CreateFontIndirectExA|CreateFontIndirectExW|CreateFontIndirectW|CreateFontW|CreateHalftonePalette|CreateHatchBrush|CreateIC|CreateICA|CreateICW|CreateMetaFile|CreateMetaFileA|CreateMetaFileW|CreatePalette|CreatePatternBrush|CreatePen|CreatePenIndirect|CreatePolyPolygonRgn|CreatePolygonRgn|CreateRectRgn|CreateRectRgnIndirect|CreateRoundRectRgn|CreateScalableFontResource|CreateScalableFontResourceA|CreateScalableFontResourceW|CreateSolidBrush|DPtoLP|DeleteColorSpace|DeleteDC|DeleteEnhMetaFile|DeleteMetaFile|DeleteObject|DescribePixelFormat|DeviceCapabilitiesEx|DeviceCapabilitiesExA|DeviceCapabilitiesExW|DrawEscape|Ellipse|EnableEUDC|EndDoc|EndFormPage|EndPage|EndPath|EnumEnhMetaFile|EnumFontFamilies|EnumFontFamiliesA|EnumFontFamiliesEx|EnumFontFamiliesExA|EnumFontFamiliesExW|EnumFontFamiliesW|EnumFonts|EnumFontsA|EnumFontsW|EnumICMProfiles|EnumICMProfilesA|EnumICMProfilesW|EnumMetaFile|EnumObjects|EqualRgn|Escape|EudcLoadLinkW|EudcUnloadLinkW|ExcludeClipRect|ExtCreatePen|ExtCreateRegion|ExtEscape|ExtFloodFill|ExtSelectClipRgn|ExtTextOut|ExtTextOutA|ExtTextOutW|FillPath|FillRgn|FixBrushOrgEx|FlattenPath|FloodFill|FrameRgn|GdiArtificialDecrementDriver|GdiComment|GdiDeleteSpoolFileHandle|GdiEndDocEMF|GdiEndPageEMF|GdiFlush|GdiGetBatchLimit|GdiGetDC|GdiGetDevmodeForPage|GdiGetPageCount|GdiGetPageHandle|GdiGetSpoolFileHandle|GdiPlayDCScript|GdiPlayEMF|GdiPlayJournal|GdiPlayPageEMF|GdiPlayPrivatePageEMF|GdiPlayScript|GdiResetDCEMF|GdiSetBatchLimit|GdiStartDocEMF|GdiStartPageEMF|GetArcDirection|GetAspectRatioFilterEx|GetBitmapBits|GetBitmapDimensionEx|GetBkColor|GetBkMode|GetBoundsRect|GetBrushOrgEx|GetCharABCWidths|GetCharABCWidthsA|GetCharABCWidthsFloat|GetCharABCWidthsFloatA|GetCharABCWidthsFloatW|GetCharABCWidthsI|GetCharABCWidthsW|GetCharWidth32|GetCharWidth32A|GetCharWidth32W|GetCharWidth|GetCharWidthA|GetCharWidthFloat|GetCharWidthFloatA|GetCharWidthFloatW|GetCharWidthI|GetCharWidthW|GetCharacterPlacement|GetCharacterPlacementA|GetCharacterPlacementW|GetClipBox|GetClipRgn|GetColorAdjustment|GetColorSpace|GetCurrentObject|GetCurrentPositionEx|GetDCBrushColor|GetDCOrgEx|GetDCPenColor|GetDIBColorTable|GetDIBits|GetDeviceCaps|GetDeviceGammaRamp|GetEnhMetaFile|GetEnhMetaFileA|GetEnhMetaFileBits|GetEnhMetaFileDescription|GetEnhMetaFileDescriptionA|GetEnhMetaFileDescriptionW|GetEnhMetaFileHeader|GetEnhMetaFilePaletteEntries|GetEnhMetaFilePixelFormat|GetEnhMetaFileW|GetFontAssocStatus|GetFontData|GetFontLanguageInfo|GetFontResourceInfoW|GetFontUnicodeRanges|GetGlyphIndices|GetGlyphIndicesA|GetGlyphIndicesW|GetGlyphOutline|GetGlyphOutlineA|GetGlyphOutlineW|GetGraphicsMode|GetICMProfile|GetICMProfileA|GetICMProfileW|GetKerningPairs|GetKerningPairsA|GetKerningPairsW|GetLayout|GetLogColorSpace|GetLogColorSpaceA|GetLogColorSpaceW|GetMapMode|GetMetaFile|GetMetaFileA|GetMetaFileBitsEx|GetMetaFileW|GetMetaRgn|GetMiterLimit|GetNearestColor|GetNearestPaletteIndex|GetObject|GetObjectA|GetObjectType|GetObjectW|GetOutlineTextMetrics|GetOutlineTextMetricsA|GetOutlineTextMetricsW|GetPaletteEntries|_GetPath|GetPixel|GetPixelFormat|GetPolyFillMode|GetROP2|GetRandomRgn|GetRasterizerCaps|GetRegionData|GetRelAbs|GetRgnBox|GetStockObject|GetStretchBltMode|GetSystemPaletteEntries|GetSystemPaletteUse|GetTextAlign|GetTextCharacterExtra|GetTextCharset|GetTextCharsetInfo|GetTextColor|GetTextExtentExPoint|GetTextExtentExPointA|GetTextExtentExPointI|GetTextExtentExPointW|GetTextExtentPoint32|GetTextExtentPoint32A|GetTextExtentPoint32W|GetTextExtentPoint|GetTextExtentPointA|GetTextExtentPointI|GetTextExtentPointW|GetTextFace|GetTextFaceA|GetTextFaceW|GetTextMetrics|GetTextMetricsA|GetTextMetricsW|GetViewportExtEx|GetViewportOrgEx|GetWinMetaFileBits|GetWindowExtEx|GetWindowOrgEx|GetWorldTransform|IntersectClipRect|InvertRgn|LPtoDP|LineDD|LineDDA|LineTo|MaskBlt|ModifyWorldTransform|MoveToEx|OffsetClipRgn|OffsetRgn|OffsetViewportOrgEx|OffsetWindowOrgEx|PaintRgn|PatBlt|PathToRegion|Pie|PlayEnhMetaFile|PlayEnhMetaFileRecord|PlayMetaFile|PlayMetaFileRecord|PlgBlt|PolyBezier|PolyBezierTo|PolyDraw|PolyPolygon|PolyPolyline|PolyTextOut|PolyTextOutA|PolyTextOutW|Polygon|Polyline|PolylineTo|PtInRegion|PtVisible|RealizePalette|RectInRegion|RectVisible|Rectangle|RemoveFontMemResourceEx|RemoveFontResource|RemoveFontResourceA|RemoveFontResourceEx|RemoveFontResourceExA|RemoveFontResourceExW|RemoveFontResourceW|ResetDC|ResetDCA|ResetDCW|ResizePalette|RestoreDC|RoundRect|SaveDC|ScaleViewportExtEx|ScaleWindowExtEx|SelectBrushLocal|SelectClipPath|SelectClipRgn|SelectFontLocal|SelectObject|SelectPalette|SetAbortProc|SetArcDirection|SetBitmapBits|SetBitmapDimensionEx|SetBkColor|SetBkMode|SetBoundsRect|SetBrushOrgEx|SetColorAdjustment|SetColorSpace|SetDCBrushColor|SetDCPenColor|SetDIBColorTable|SetDIBits|SetDIBitsToDevice|SetDeviceGammaRamp|SetEnhMetaFileBits|SetFontEnumeration|SetGraphicsMode|SetICMMode|SetICMProfile|SetICMProfileA|SetICMProfileW|SetLayout|SetMagicColors|SetMapMode|SetMapperFlags|SetMetaFileBitsEx|SetMetaRgn|SetMiterLimit|SetPaletteEntries|SetPixel|SetPixelFormat|SetPixelV|SetPolyFillMode|SetROP2|SetRectRgn|SetRelAbs|SetStretchBltMode|SetSystemPaletteUse|SetTextAlign|SetTextCharacterExtra|SetTextColor|SetTextJustification|SetViewportExtEx|SetViewportOrgEx|SetWinMetaFileBits|SetWindowExtEx|SetWindowOrgEx|SetWorldTransform|StartDoc|StartDocA|StartDocW|StartFormPage|StartPage|StretchBlt|StretchDIBits|StrokeAndFillPath|StrokePath|SwapBuffers|TextOut|TextOutA|TextOutW|TranslateCharsetInfo|UnrealizeObject|UpdateColors|UpdateICMRegKey|UpdateICMRegKeyA|UpdateICMRegKeyW|WidenPath|gdiPlaySpoolStream)\\b"
+        }
+      ]
+    },
+    "lib_comctr32": {
+      "patterns": [
+        { "comment": "comctr32.as define",
+          "match": "\\b(?i)(__COMCTL32__)\\b",
+          "captures": {"1": {"name": "support.constant.lib.comctr32.hsp3"}}
+        },
+        { "comment": "comctr32.as function",
+          "captures": {"1": {"name": "support.function.lib.comctr32.hsp3"}},
+          "match": "\\b(?i)(CreateMappedBitmap|CreatePropertySheetPage|CreatePropertySheetPageA|CreatePropertySheetPageW|CreateStatusWindow|CreateStatusWindowA|CreateStatusWindowW|CreateToolbar|CreateToolbarEx|CreateUpDownControl|DestroyPropertySheetPage|DrawInsert|DrawStatusText|DrawStatusTextA|DrawStatusTextW|FlatSB_EnableScrollBar|FlatSB_GetScrollInfo|FlatSB_GetScrollPos|FlatSB_GetScrollProp|FlatSB_GetScrollRange|FlatSB_SetScrollInfo|FlatSB_SetScrollPos|FlatSB_SetScrollProp|FlatSB_SetScrollRange|FlatSB_ShowScrollBar|GetEffectiveClientRect|ImageList_Add|ImageList_AddIcon|ImageList_AddMasked|ImageList_BeginDrag|ImageList_Copy|ImageList_Create|ImageList_Destroy|ImageList_DragEnter|ImageList_DragLeave|ImageList_DragMove|ImageList_DragShowNolock|ImageList_Draw|ImageList_DrawEx|ImageList_DrawIndirect|ImageList_Duplicate|ImageList_EndDrag|ImageList_GetBkColor|ImageList_GetDragImage|ImageList_GetIcon|ImageList_GetIconSize|ImageList_GetImageCount|ImageList_GetImageInfo|ImageList_GetImageRect|ImageList_LoadImage|ImageList_LoadImageA|ImageList_LoadImageW|ImageList_Merge|ImageList_Read|ImageList_Remove|ImageList_Replace|ImageList_ReplaceIcon|ImageList_SetBkColor|ImageList_SetDragCursorImage|ImageList_SetFilter|ImageList_SetIconSize|ImageList_SetImageCount|ImageList_SetOverlayImage|ImageList_Write|InitCommonControls|InitCommonControlsEx|InitializeFlatSB|LBItemFromPt|MakeDragList|MenuHelp|PropertySheet|PropertySheetA|PropertySheetW|ShowHideMenuCtl|_TrackMouseEvent|UninitializeFlatSB)\\b"
+        }
+      ]
+    }
+	}
+}
