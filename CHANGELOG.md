@@ -10,5 +10,8 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - ファイルが変更され、未保存のままコマンドを実行したとき、自動保存する。
 
+## 0.0.3
+- ss.pngファイルのパスをgithubに変更。
+
 ## 0.0.1 - 2017-01-04
 - 初ベータリリース。
