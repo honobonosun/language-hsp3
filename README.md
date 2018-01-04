@@ -2,7 +2,7 @@
 このパッケージは、HSP3言語の文法をサポートするための機能を含んでいます。  
 HSP3 language support for Atom
 
-![ss](./ss.png)
+![ss](ss.png)
 
 # 機能
 HSP3開発環境をAtomで提供するために、以下の機能をサポートします。
