@@ -1,0 +1,52 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"scopeName": "source.hs",
+	"name": "HSP3 (hs)",
+	"fileTypes": ["hs"],
+	"patterns": [
+    { "include": "#comments"},
+    { "comment": "%%エスケープ",
+      "match": "^(%%).*$",
+      "captures": {"1": {"name": "constant.character.escape.hs"}}
+    },
+    { "comment": "%inst",
+      "begin": "(?i)^(%inst)",
+      "beginCaptures": {"1": {"name": "markup.heading.fields.hs"}},
+      "end": "(?=^%)",
+      "patterns": [
+        { "comment": "HTML",
+          "begin": "(?i)(html\\{)",
+          "beginCaptures": {"1": {"name": "keyword.hs"}},
+          "end": "(?i)(\\}html)",
+          "endCaptures": {"1": {"name": "keyword.hs"}},
+          "patterns": [{ "include": "text.html.basic"}]
+        }
+      ]
+    },
+    { "comment": "%sample",
+      "begin": "(?i)^(%sample)",
+      "beginCaptures": {"1": {"name": "markup.heading.fields.hs"}},
+      "end": "(?=^%)",
+      "patterns": [
+        { "comment": "警告、コメントが行頭にあるとhsのコメントとして解釈される。",
+          "match": "^;.*$",
+          "name": "invalid.deprecated.sample.comment.hs"
+        },
+        { "include": "source.hsp3"}
+      ]
+    },
+    { "comment": "other_fields",
+      "match": "(?i)^(%\\w*)",
+      "captures": {"1": {"name": "markup.heading.fields.hs"}}
+    }
+  ],
+  "repository": {
+		"comments": {
+			"patterns": [
+        { "name": "comment.line.hs",
+          "match": ";.*$"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,126 @@
+# If you want some examples of settings, check out:
+# https://github.com/atom/language-gfm/blob/master/settings/gfm.cson
+'.source.hsp3':
+  editor:
+    commentStart: '/* '
+    commentEnd  : ' */'
+  autocomplete:
+    symbols:
+      class:
+        selector: '.name.module'
+      variable:
+        selector: 'variable.other.modterm, variable.other.function'
+      property:
+        selector: 'variable.other.module'
+      import:
+        selector: 'name.comfunc, name.cmd, name.func'
+      keyword:
+        selector: '.name.define'
+      constant:
+        selector: '.name.const, .name.enum'
+      function:
+        selector: '.name.deffunc, name.modfunc'
+      '': # the catch-all
+        selector: '.source'
+        typePriority: 0
+      tag:
+        # HS field tag
+        suggestions: [
+          'index','prm','inst','sample','href','dll','ver','date','author',
+          'url','note','type','group','prot','portinfo'
+        ]
+      type:
+        suggestions: [
+          # AHT
+          'class','name','author','ver','exp','icon','iconid',
+          # bootopt
+          'notime','utf8','hsp64',
+          # packopt
+          'runtime','type','xsize','ysize','hide','orgpath',
+          # cmpopt
+          'ppout','optcode','optinfo','varname','varinit','optprm','skipjpspc',
+          'utf8',
+          # ユーザ定義
+          'const','enum','define','deffunc','defcfunc','module','modinit',
+          'modterm','modfunc','modcfunc',
+          # COM,DLL
+          'comfunc','cmd',
+          # 引数型
+          'local','global','ctype',
+          'int','double','str','label','var','array'
+        ]
+        typePriority: -1
+      builtin:
+        suggestions: [
+          # COMオブジェクト系
+          'comevarg','comevent','delcom','newcom','querycom','sarrayconv',
+          'comevdisp',
+          # HSPシステム制御
+          'assert','logmes',
+          # オブジェクト系
+          'button','chkbox','clrobj','combox','input','listbox','mesbox',
+          'objnable','objimage','objmode','objprm','objsel','objsize','objskip',
+          # システム変数
+          'cnt','dir_cmdline','dir_cur','dir_desktop','dir_exe','dir_mydoc',
+          'dir_sys','dir_tv','dir_win','err','ginfo_accx','ginfo_accy',
+          'ginfo_accz','ginfo_act','ginfo_b','ginfo_cx','ginfo_cy',
+          'ginfo_dispx','ginfo_dispy','ginfo_g','ginfo_intid','ginfo_mesx',
+          'ginfo_mesy','ginfo_mx','ginfo_my','ginfo_newid','ginfo_paluse',
+          'ginfo_r','ginfo_sel','ginfo_sizex','ginfo_sizey','ginfo_sx',
+          'ginfo_sy','ginfo_vx','ginfo_vy','ginfo_winx','ginfo_winy',
+          'ginfo_wx1','ginfo_wx2','ginfo_wy1','ginfo_wy2','hdc','hinstance',
+          'hspstat','hspver','hwnd','iparam','looplev','lparam','mousew',
+          'mousex','mousey','msgothic','msmincho','notemax','notesize',
+          'refdval','refstr','stat','strsize','sublev','thismod','wparam',
+          # ファイル操作
+          'bcopy','bload','bsave','chdir','chdpm','delete','dirlist','exist',
+          'memfile','mkdir',
+          # プリプロセッサ（#は区切り文字で認識しない）
+          'addition','ahtmes','epack','include','pack','runtime','undef',
+          'define','uselib','usecom','regcmd','ifdef','ifndef','endif','aht',
+          'bootopt','packopt','cmpopt',
+          # プログラム制御
+          'if','else','repeat','loop','break','continue','foreach','wait',
+          'await','stop','return','end','run','exgoto','on','goto','gosub',
+          'oncmd','onclick','onerror','onexit','onkey',
+          # プログラム制御マクロ
+          'while','wend','for','next','do','until','_break','_continue',
+          'switch','case','default','swbreak','swend',
+          # マルチメディア制御
+          'mci','mmload','mmpley','mmstop',
+          # メモリ管理
+          'comres','ddim','delmod','dim','dimtype','ldim','lpoke','memcpy',
+          'memexpand','memset','newlab','newmod','poke','sdim','wpoke','lpoke',
+          'peek','wpeek','alloc',
+          # 基本入出力
+          'getkey','mcall','mouse','randomize','setease','sortget','sortstr',
+          'sortval','stick','abs','absf','stan','callfunc','cos','dirinfo',
+          'double','expf','getease','geteasef','gettime','ginfo','int','length',
+          'length2','length3','length4','libptr','limit','limitf','logf',
+          'objinfo','powf','rnd','sin','sqrt','str','strlen','sysinfo','tan',
+          'vartype','varuse',
+          # 数学定数
+          'M_PI',
+          # 文字列操作
+          'cnvstoa','cnvstow','getstr','noteadd','notedel','noteget','noteload',
+          'notesave','notesel','noteunsel','split','strrep','cnvatos','cnvwtos',
+          'getpath','instr','notefind','noteinfo','strf','strmid','strtrim',
+          # 標準定義マクロ
+          '__date__','__file__','__hsp30__','__hspver__','__line__','__time__',
+          '_debug','and','deg2rad','font_antialias','font_bold','font_italic',
+          'font_normal','font_strikeout','font_underline','gmode_add',
+          'gmode_alpha','gmode_gdi','gmode_mem','gmode_pixela','gmode_rgb0',
+          'gmode_rgb0alpha','gmode_sub','not','objinfo_bmscr','objinfo_hwnd',
+          'objinfo_mode','objmode_guifont','objmode_normal','objmode_usefont',
+          'or','rad2deg','screen_fixedsize','screen_frame','screen_normal',
+          'screen_palette','screen_tool','xor',
+          # 特殊代入命令
+          'dup','dupptr','mref',
+          # 画面制御命令
+          'axobj','bgscr','bmpsave','boxf','buffer','celdiv','celload','celput',
+          'chgdisp','circle','cls','color','dialog','font','gcopy','gmode',
+          'grect','groll','grotate','gsel','gsquare','gzoom','hsvcolor','line',
+          'mes','palcolor','palette','pget','picload','pos','print','pset',
+          'redraw','screen','sendmes','syscolor','sysfont','title','width',
+          'winobj'
+        ]
