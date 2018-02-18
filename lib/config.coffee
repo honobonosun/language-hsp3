@@ -43,11 +43,11 @@ module.exports =
       properties:
         runCommand:
           order: 1
-          description: 'デバッグ実行で使用するパラメータ。\n
-                        `,`で区切ることで、複数のパラメータを渡せます。\n
-                        `特殊文字で以下の文字に置き換わります。\n
-                        `%FILEPATH%` : 現在エディタで開いているパス\n
-                        `%PROJECT%`  : 現在のProjectのルートディレクトリ'
+          description: 'デバッグ実行で使用するパラメータ。
+                        `,`で区切ることで、複数のパラメータを渡せます。
+                        特殊文字で以下の文字に置き換わります。<br/>
+                        `%FILEPATH%` : 現在エディタで開いているパス<br/>
+                        `%PROJECT%` : 現在のProjectのルートディレクトリ'
           type: 'array'
           default: ['-Crdw','%FILEPATH%']
 

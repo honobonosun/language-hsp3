@@ -9,6 +9,9 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+## 0.1.1 - 2018-02-18
+- 設定テキストの誤記を修正しました。
+
 ## 0.1.0 - 2018-02-16
 - 将来のhspcのアップデートに対応するために、引数の引き渡し方法を変更しました。
 - 他のツールを使用できるようになりました。
