@@ -199,7 +199,7 @@
 					}
 				},
 				{	"comment": "packopt",
-					"match": "(?i:^\\s*(#packopt)\\s+(name|runtime|type|xsize|ysize|hide|orgpath)\\b)",
+					"match": "(?i:^\\s*(#packopt)\\s+(name|runtime|type|xsize|ysize|hide|orgpath|icon|lang|version)\\b)",
 					"captures": {
 						"1": {"name": "keyword.preprocessor.hsp3"},
 						"2": {"name": "support.constant.option.packopt.hsp3"}
@@ -539,10 +539,12 @@
 		"pp_keywords": {
 			"patterns": [
 				{"include": "#constants"},
+				{"include": "#label"},
+				{"include": "#namespace"},
 				{"include": "#operators"},
 				{"include": "#biltin"},
-        {"include": "#librarys"},
-        {"include": "#rule"}
+				{"include": "#librarys"},
+				{"include": "#rule"}
 			]
 		},
 		"biltin": {
