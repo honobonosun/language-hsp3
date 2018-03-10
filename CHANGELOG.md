@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+## 0.1.2 - 2018-03-10
+- HSP3.5で追加された\#packoptのicon,lang,versionオプションを認識できない問題を修正しました。
+- \#defineで名前空間がハイライトされない問題を修正しました。
+
 ## 0.1.1 - 2018-02-18
 - 設定テキストの誤記を修正しました。
 
