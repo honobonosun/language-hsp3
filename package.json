@@ -5,7 +5,9 @@
   "description": "HSP3 syntax highlighting and compile task support for ATOM",
   "keywords": [
     "language",
-    "grammar"
+    "grammar",
+    "highlighting",
+    "syntax"
   ],
   "activationCommands": {
     "atom-workspace": [

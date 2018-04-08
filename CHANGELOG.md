@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+## 0.1.4 - 2018-04-08
+- Ubuntu環境でShift_JISエンコードのファイルを開いたとき、\\文字が¥文字に置き換えられて、マクロの改行を認識できない問題を修正しました。
+- hsファイルの内部スコープを`source.hs`から`text.hs`に変更しました。
+- モジュール名に名前空間を記入すると`invalid.illegal`でハイライトされる問題を修正しました。
+
 ## 0.1.3
 - `apm publish patch`コマンドのリトライ。
 

@@ -20,15 +20,15 @@
 	"repository": {
 		"comments": {
 			"patterns": [
-				{	"comment": "一行コメント",
-					"match": "(;|//).*$",
-					"name": "comment.line.hsp3"
-				},
 				{	"comment": "複数行コメント",
 					"begin": "/\\*",
 					"end": "\\*/",
 					"name": "comment.block.hsp3",
-          "patterns": [{"include":"source.hs"}]
+          "patterns": [{"include":"text.hs"}]
+				},
+				{	"comment": "一行コメント",
+					"match": "(;|//).*$",
+					"name": "comment.line.hsp3"
 				}
 			]
 		},
@@ -62,7 +62,7 @@
 					}
 				},
 				{ "comment": "文字コードで円マーク",
-					"match": "'\\\\'",
+					"match": "'(\\\\|¥)'",
 					"name": "invalid.illegal.character.not_escape_OnlyOneYenSign.hsp3"
 				}
 			]
@@ -70,7 +70,7 @@
 		"string_quoted_double": {
 			"patterns": [
 				{	"comment": "\"hoge\"な文字",
-					"match": "\"((?:\\\\\"|\\\\\\\\|[^\"])*)\"",
+					"match": "\"((?:\\\\\"|\\\\\\\\|¥\"|¥¥|[^\"])*)\"",
 					"captures": {"1": {"patterns": [{"include": "#escaped_char"}]}},
 					"name": "string.quoted.double.hsp3"
 				}
@@ -89,7 +89,7 @@
 		"escaped_char": {
 			"patterns": [
 				{	"comment": "エスケープ文字",
-					"match": "(?i)\\\\(?:n|r|t|\\\"|\\\\)",
+					"match": "(?i)(?:\\\\|¥)(?:n|r|t|\\\"|\\\\|¥)",
 					"name": "constant.character.escape.hsp3"
 				}
 			]
@@ -161,7 +161,7 @@
 					"name": "keyword.operator.comparison.hsp3"
 				},
 				{
-					"match": "\\+=|-\\=|\\*=|/=|//=|&=|\\|=|\\^=|>>=|<<=",
+					"match": "\\+=|-\\=|\\*=|/=|//=|&=|\\|¥|=|\\^=|>>=|<<=",
 					"name": "keyword.operator.assignment.augmented.hsp3"
 				},
 				{
@@ -224,7 +224,7 @@
 							"name": "meta.name.moudle.hsp3",
 							"patterns": [
 								{	"comment": "module name is double quoted type.",
-									"match": "(\"((?:\\\\\"|[^\"])*)\")",
+									"match": "(\"((?:\\\\\"|¥\"|[^\"])*)\")",
 									"captures": {
 										"1": {"name": "meta.module_name_double_quoted.hsp3"},
 										"2": {"patterns": [{"include": "#pp_module_name"}]}
@@ -234,7 +234,7 @@
 							]
 						}
 					},
-					"end": "(?<!\\\\)\\n",
+					"end": "(?<!\\\\|¥)\\n",
 					"patterns": [
 						{"include": "#comments"},
 						{	"comment": "illegal rule, variable symbol name is number only.",
@@ -279,7 +279,7 @@
 						"4": {"name": "meta.name.define.hsp3",
 									"patterns": [{"include": "#pp_function_crack_name"}]}
 					},
-					"end": "(?<!\\\\)\\n",
+					"end": "(?<!\\\\|¥)\\n",
 					"patterns": [
 						{	"include": "#comments"},
 						{	"comment": "$number 仮引数",
@@ -312,7 +312,7 @@
 									"patterns": [{"include": "#pp_function_crack_name"}]},
 						"4": {"name": "storage.modifiers.onexit.hsp3"}
 					},
-					"end": "(?<!\\\\)\\n",
+					"end": "(?<!\\\\|¥)\\n",
 					"patterns": [
 						{"include": "#comments"},
 						{"include": "#pp_user_function_argument"}
@@ -326,7 +326,7 @@
 						"3": {"name": "meta.name.modfunc.hsp3",
 									"patterns": [{"include": "#pp_function_crack_name"}]}
 					},
-					"end": "(?<!\\\\)\\n",
+					"end": "(?<!\\\\|¥)\\n",
 					"patterns": [
 						{"include": "#comments"},
 						{"include": "#pp_user_function_argument"}
@@ -337,7 +337,7 @@
 					"beginCaptures": {
 						"1": {"name": "storage.type.modinit.hsp3"}
 					},
-					"end": "(?<!\\\\)\\n",
+					"end": "(?<!\\\\|¥)\\n",
 					"patterns": [
 						{"include": "#comment"},
 						{"include": "#pp_user_function_argument"}
@@ -346,7 +346,7 @@
 				{	"comment": "modterm",
 					"begin": "(?i:^\\s*(#modterm)\\b)",
 					"beginCaptures": {"1": {"name": "storage.type.modterm.hsp3"}},
-					"end": "(?<!\\\\)\\n",
+					"end": "(?<!\\\\|¥)\\n",
 					"patterns": [
 						{	"include": "#comment"},
 						{	"comment": "局地変数",
@@ -391,14 +391,14 @@
 									}
 								},
 								{	"comment": "省略記法",
-									"match": "(\\w+)(\"((?:\\\\\"|[^\"])*)\"(\\w+)?)?",
+									"match": "(\\w+)(\"((?:\\\\\"|¥\"|[^\"])*)\"(\\w+)?)?",
 									"captures": {
 										"1": {"name": "string.lib_export_name.hsp3"},
 										"2": {"name": "invalid.deprecated.export_name.hsp3"}
 									}
 								},
 								{	"comment": "フルネーム記法",
-									"match": "(\"((?:\\\\\"|[^\"])*)\")(\\w+)?",
+									"match": "(\"((?:\\\\\"|¥\"|[^\"])*)\")(\\w+)?",
 									"captures": {
 										"1": {"name": "string.quoted.double.lib_export_fullname.hsp3"},
 										"3": {"name": "invalid.deprecated.export.name.hsp3"}
@@ -407,7 +407,7 @@
 							]
 						}
 					},
-					"end": "(?<!\\\\)\\n",
+					"end": "(?<!\\\\|¥)\\n",
 					"patterns": [
 						{"include": "#comments"},
 						{"include": "#number"},
@@ -437,7 +437,7 @@
 						"4": {"name": "meta.comfunc_import_index.hsp3",
 									"patterns": [{"include": "#number"}]}
 					},
-					"end": "(?<!\\\\)\\n",
+					"end": "(?<!\\\\|¥)\\n",
 					"patterns": [
 						{	"include": "#comments"},
 						{	"comment": "storage types",
@@ -463,15 +463,16 @@
 		},
 		"pp_module_name": {
 			"patterns": [
-				{	"comment": "モジュール名は数字から始まらない",
-					"match": "\\d+(?:\\w|`|@)*",
+				{	"comment": "モジュール名は＠と数字からは始まらない",
+					"match": "^(\\d+|@)(?:\\w|`|@)*",
 					"name": "invalid.illegal.module.first_cher_number.hsp3"
 				},
 				{	"comment": "module name",
-					"match": "((?:\\w|`){1,20})((?:\\w|`|@)*)",
+					"match": "((?:\\w|`){1,20})(@(?:\\w|`){1,20})?((?:\\w|`|@)*)?",
 					"captures": {
 						"1": {"name": "entity.name.type.module.hsp3"},
-						"2": {"name": "invalid.illegal.module.name_is_max_over_length.not_atmark.hsp3"}
+						"2": {"patterns": [{"include": "#namespace"}]},
+						"3": {"name": "invalid.illegal.module.name_is_max_over_length.not_atmark.hsp3"}
 					}
 				}
 			]
@@ -479,7 +480,7 @@
 		"pp_function_crack_name": {
 			"patterns": [
 				{	"comment": "最初に数字はオカシイ",
-					"match": "\\d+(?:\\w|`|@)*",
+					"match": "^\\d+(?:\\w|`|@)*",
 					"name": "invalid.illegal.function.first_cher_number.hsp3"
 				},
 				{	"comment": "ユーザー定義名",
