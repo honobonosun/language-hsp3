@@ -466,30 +466,32 @@
     },
     "pp_module_name": {
       "patterns": [
-        {	"comment": "モジュール名は数字から始まらない",
-          "match": "\\d+(?:\\w|`|@)*",
+        {	"comment": "モジュール名は＠と数字から始まらない",
+          "match": "(\\d|@)+(?:\\w|`|@)*",
           "name": "invalid.illegal.first_cher_number.module.hsp3"
         },
         { "comment": "module name",
-          "match": "((?:\\w|`){1,20})(@(?:\\w|`|@)*)?",
+          "match": "((?:\\w|`){1,20})((?:\\w|`)*)(@(?:\\w|`|@)*)?",
           "captures": {
             "1": {"name": "entity.name.class.module.hsp3"},
-            "2": {"patterns": [{"include": "#namespace"}]}
+            "2": {"name": "invalid.illegal.char_over_length.hsp3"},
+            "3": {"patterns": [{"include": "#namespace"}]}
           }
         }
       ]
     },
     "pp_function_crack_name": {
       "patterns": [
-        {	"comment": "最初に数字はオカシイ",
-          "match": "\\d+(?:\\w|`|@)*",
+        {	"comment": "ユーザー定義名は＠と数字からは始まらない",
+          "match": "(\\d|@)+(?:\\w|`|@)*",
           "name": "invalid.illegal.function.first_cher_number.hsp3"
         },
         {	"comment": "ユーザー定義名",
-          "match": "((?:\\w|`){1,60})(@(?:\\w|`|@)*)?",
+          "match": "((?:\\w|`){1,60})((?:\\w|`)*)(@(?:\\w|`|@)*)?",
           "captures": {
             "1": {"name": "entity.name.function.hsp3"},
-            "2": {"patterns":[{"include":"#namespace"}]}
+            "2": {"name": "invalid.illegal.char_over_length.hsp3"},
+            "3": {"patterns":[{"include":"#namespace"}]}
           }
         }
       ]
