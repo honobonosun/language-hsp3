@@ -140,12 +140,12 @@
           }
         },
         {	"comment": "モジュール名は20文字まで",
-          "match": "(@)((?:\\w|`){1,20}((?:\\w|`|@)*))?",
+          "match": "(@)((?:\\w|`){1,20}((?:\\w|`)+)?)?",
           "name": "meta.use.atmark_namespace.hsp3",
           "captures": {
             "1": {"name": "support.class.namespace.atmark.hsp3"},
             "2": {"name": "support.class.namespace.symbol.hsp3"},
-            "3": {"name": "invalid.illegal.name_is_max_over_length.not_atmark.hsp3"}
+            "3": {"name": "invalid.illegal.name_is_max_over_length.hsp3"}
           }
         }
       ]
