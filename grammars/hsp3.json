@@ -199,7 +199,7 @@
           }
         },
         {	"comment": "packopt",
-          "match": "(?i:^\\s*(#packopt)\\s+(name|runtime|type|xsize|ysize|hide|orgpath|icon|lang|version)\\b)",
+          "match": "(?i:^\\s*(#packopt)\\s+(name|runtime|type|xsize|ysize|hide|orgpath|icon|lang|version|manifest)\\b)",
           "captures": {
             "1": {"name": "keyword.preprocessor.hsp3"},
             "2": {"name": "support.constant.option.packopt.hsp3"}
@@ -624,7 +624,7 @@
           "captures": {"1": {"name": "keyword.hsp3"}}
         },
         {	"comment": "標準定義マクロ",
-          "match": "(?i:\\b(__date__|__file__|__hsp30__|__hspver__|__line__|__time__|_debug|and|deg2rad|font_antialias|font_bold|font_italic|font_normal|font_strikeout|font_underline|gmode_add|gmode_alpha|gmode_gdi|gmode_mem|gmode_pixela|gmode_rgb0|gmode_rgb0alpha|gmode_sub|not|objinfo_bmscr|objinfo_hwnd|objinfo_mode|objmode_guifont|objmode_normal|objmode_usefont|or|rad2deg|screen_fixedsize|screen_frame|screen_normal|screen_palette|screen_tool|xor)\\b)",
+          "match": "(?i:\\b(__date__|__file__|__hsp30__|__hspver__|__line__|__time__|_debug|and|deg2rad|font_antialias|font_bold|font_italic|font_normal|font_strikeout|font_underline|gmode_add|gmode_alpha|gmode_gdi|gmode_mem|gmode_pixela|gmode_rgb0|gmode_rgb0alpha|gmode_sub|not|objinfo_bmscr|objinfo_hwnd|objinfo_mode|objmode_guifont|objmode_normal|objmode_usefont|or|rad2deg|screen_fixedsize|screen_frame|screen_hide|screen_normal|screen_palette|screen_tool|xor)\\b)",
           "captures": {"1": {"name": "constant.numeric.exmacro.hsp3"}}
         },
         {	"comment": "特殊代入命令",
