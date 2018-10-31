@@ -7,7 +7,7 @@ module.exports =
     return unless path?
 
     # @execFile Config.get.compilerPath(),Config.get.runCommand()
-    command = (Config.get.compilerPath() + " " + Config.get.runCommand().join(' ')).replace(/\""/g, "")
+    command = (Config.get.compilerPath() + " " + Config.get.runCommand().join(' ').replace(/\""/g, ""))
     @exec command
 
   make: ->
@@ -15,7 +15,7 @@ module.exports =
     return unless path?
 
     # @execFile Config.get.compilerPath(),Config.get.makeCommand()
-    command = (Config.get.compilerPath() + " " + Config.get.makeCommand().join(' ')).replace(/\""/g, "")
+    command = (Config.get.compilerPath() + " " + Config.get.makeCommand().join(' ').replace(/\""/g, ""))
     @exec command
 
   safeBroker: ->
