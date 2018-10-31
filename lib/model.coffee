@@ -6,13 +6,17 @@ module.exports =
     path = @safeBroker()
     return unless path?
 
-    @execFile Config.get.compilerPath(),Config.get.runCommand()
+    # @execFile Config.get.compilerPath(),Config.get.runCommand()
+    command = (Config.get.compilerPath() + " " + Config.get.runCommand().join(' ')).replace(/\""/g, "")
+    @exec command
 
   make: ->
     path = @safeBroker()
     return unless path?
 
-    @execFile Config.get.compilerPath(),Config.get.makeCommand()
+    # @execFile Config.get.compilerPath(),Config.get.makeCommand()
+    command = (Config.get.compilerPath() + " " + Config.get.makeCommand().join(' ')).replace(/\""/g, "")
+    @exec command
 
   safeBroker: ->
     editor = atom.workspace.getActiveTextEditor()
@@ -35,6 +39,26 @@ module.exports =
     require('child_process').execFile(
       filePath,
       commands,
+      {
+        encoding: Config.get.compilerEncoding()
+        maxBuffer: Config.get.maxLogBuffer()
+      },
+      (err, stdout, stderr) ->
+        option =
+          detail: require('./submodel').convertToUTF8(stdout)
+        if err
+          option.dismissable = true
+          atom.notifications.addError "Error (language-hsp3)", option
+        else
+          option.dismissable = Config.get.keepShowSuccessMessage()
+          atom.notifications.addSuccess "Success (language-hsp3)", option
+        return
+    )
+    return
+
+  exec: (command) ->
+    require('child_process').exec(
+      command,
       {
         encoding: Config.get.compilerEncoding()
         maxBuffer: Config.get.maxLogBuffer()
