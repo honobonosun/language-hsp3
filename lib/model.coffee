@@ -6,17 +6,23 @@ module.exports =
     path = @safeBroker()
     return unless path?
 
-    # @execFile Config.get.compilerPath(),Config.get.runCommand()
-    command = (Config.get.compilerPath() + " " + Config.get.runCommand().join(' ').replace(/\""/g, ""))
-    @exec command
+    if Config.get.UsekillQuiotations()
+      command = (Config.get.compilerPath() + " " + Config.get.runCommand().join(' ').replace(/\""/g, ""))
+      console.log 'UsekillQuiotations',command if atom.inDevMode()
+      @exec command
+    else
+      @execFile Config.get.compilerPath(),Config.get.runCommand()
 
   make: ->
     path = @safeBroker()
     return unless path?
 
-    # @execFile Config.get.compilerPath(),Config.get.makeCommand()
-    command = (Config.get.compilerPath() + " " + Config.get.makeCommand().join(' ').replace(/\""/g, ""))
-    @exec command
+    if Config.get.UsekillQuiotations()
+      command = (Config.get.compilerPath() + " " + Config.get.makeCommand().join(' ').replace(/\""/g, ""))
+      console.log 'UsekillQuiotations',command if atom.inDevMode()
+      @exec command
+    else
+      @execFile Config.get.compilerPath(),Config.get.makeCommand()
 
   safeBroker: ->
     editor = atom.workspace.getActiveTextEditor()
@@ -77,5 +83,5 @@ module.exports =
     return
 
   test: ->
-    console.log Config.get.replace(['%PROJECT%'])
+    console.log Config.get.replace(['%PROJECT%']) if atom.inDevMode()
     return

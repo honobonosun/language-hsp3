@@ -57,6 +57,18 @@ module.exports =
           type: 'array'
           default: ['-CPm','%FILEPATH%']
 
+    extensionOptions:
+      order: 3
+      title: 'Extension Option Settings'
+      type: 'object'
+      properties:
+        UsekillQuiotations:
+          order: 1
+          title: 'Delete quotation character'
+          description: 'ソースファイルパスにダブルクオーテーションを付けない。'
+          type: 'boolean'
+          default: true
+
   get:
     replace: (arr) ->
       return unless arr?
@@ -90,3 +102,6 @@ module.exports =
 
     makeCommand: ->
       @replace(atom.config.get('language-hsp3.commands').makeCommand)
+
+    UsekillQuiotations: ->
+      atom.config.get('language-hsp3.extensionOptions').UsekillQuiotations
