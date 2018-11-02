@@ -13,7 +13,7 @@ All notable changes to this project will be documented in this file.
 - chell-uoxou様のプルリクエストをマージしました。
   - 空白文字を含むパスをhspc.exeに渡せない問題が解決します。
   - exec関数とexecFile関数の切り替えをパッケージ設定画面からできるように変更しました。
-- [dev] coffeelint.jsonを追加しました。
+- *dev* coffeelint.jsonを追加しました。
   - パッケージ開発者は、node.jsのcoffeelintを導入することで、linterの支援を受けられます。
 
 ## 0.1.6 - 2018-05-06
