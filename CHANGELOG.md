@@ -9,6 +9,34 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+## 0.2.0 - 2018-11-16
+- *upgrade* grammarsフォルダのファイルたちの更新が完了しました。
+- *feat* labelが位置定義以外でもハイライトされます。
+- *update* トークンの認識方法を変更しました。
+- *update* 一部のスペースを抜いた省略記述のハイライトに対応しました。（例：\#func name"name"int）
+- *add* comdlg32.as定義がハイライトされます。
+- *add* a2d.hspの定義がハイライトされます。
+- *add* ユーザー定義名の途中で使用できない記号が出現すると、"invalid.illegal.hsp3"スコープ名でハイライトします。\#defineはこの影響を受けません。\#enumは`=`文字に、この影響を受けません。
+- *change* 一部のスコープ名が変更されました。一部のシンタックステーマで、見た目が変わります。
+  - \#define,\#const,\#enum のユーザー定義名に割当らてたスコープ名は"entity.name.section.hsp3"です。
+  - labelのスコープ名は"markup.bold.(asterisk|labelname).hsp3"です。
+- *fix* emojiがハイライトされない問題を修正しました。
+  - \#define,\#deffunc,\#defcfunc,\#const,\#enum,\#comfunc,\#cmd,\#module,\#modfunc,\#modcfunc のユーザー定義名
+  - local変数名
+  - \#defineの%tタグ名
+- *fix* シングルクォートで、エスケープシーケンスのハイライトが機能していない問題を修正しました。
+- *fix* トークンの識別をemojiに対応させて、できるだけ厳格にハイライトします。
+- *fix* トークンの60文字制限を[HSP3 Documentの記載通りとなる59文字](http://www.onionsoft.net/hsp/v35/doclib/hspprog.htm#TOLERANCE_LEVEL)へ引き下げました。
+- *fix* [トークンが59文字以上になると、"invalid.deprecated.hsp3"スコープ名でハイライトされるように修正しました。](https://github.com/honobonosun/language-hsp3/issues/4)
+- *fix* ユーザー定義名の最初の文字が全角の数字でも、"invalid.illegal.hsp3"スコープ名でハイライトされた問題を修正しました。
+
+## 0.1.7 - 2018-11-02
+- chell-uoxou様の[プルリクエスト #8](https://github.com/honobonosun/language-hsp3/pull/8)をマージしました。
+  - 空白文字を含むパスをhspc.exeに渡せない問題が解決します。
+  - exec関数とexecFile関数の切り替えをパッケージ設定画面からできるように変更しました。
+- *dev* coffeelint.jsonを追加しました。
+  - パッケージ開発者は、node.jsのcoffeelintを導入することで、linterの支援を受けられます。
+
 ## 0.1.6 - 2018-05-06
 - ユーザー定義名とモジュール名で、入れ子名前空間の記入に対応しました。
 
