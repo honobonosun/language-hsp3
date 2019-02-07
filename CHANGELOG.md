@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 ## 0.2.1 - 2019-02-07
-- *fix* ハイライトされていないキーワードを発見して、ハイライトされるように修正しました。
+- *fix* ハイライトされていないキーワードを発見して、ハイライトされるように修正しました。[#5](https://github.com/honobonosun/language-hsp3/issues/5#issuecomment-461335167)
 
 ## 0.2.0 - 2018-11-16
 - *upgrade* grammarsフォルダのファイルたちの更新が完了しました。
