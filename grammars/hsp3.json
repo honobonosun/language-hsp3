@@ -1061,7 +1061,7 @@
         },
         {
           "comment": "オブジェクト系",
-          "match": "(?i)^(button|chkbox|clrobj|combox|input|listbox|mesbox|objnable|objimage|objmode|objprm|objsel|objsize|objskip)(@\\S*)?$",
+          "match": "(?i)^(button|chkbox|clrobj|combox|input|listbox|mesbox|objnable|objimage|objmode|objprm|objsel|objsize|objskip|objenable)(@\\S*)?$",
           "captures": {
             "1": {
               "name": "keyword.hsp3"
@@ -1145,7 +1145,7 @@
         },
         {
           "comment": "マルチメディア制御",
-          "match": "(?i)^(mci|mmload|mmpley|mmstop)(@\\S*)?$",
+          "match": "(?i)^(mci|mmload|mmplay|mmstop)(@\\S*)?$",
           "captures": {
             "1": {
               "name": "keyword.hsp3"
@@ -1193,7 +1193,7 @@
         },
         {
           "comment": "基本入出力関数",
-          "match": "(?i)^(abs|absf|stan|callfunc|cos|dirinfo|double|expf|getease|geteasef|gettime|ginfo|int|length|length2|length3|length4|libptr|limit|limitf|logf|objinfo|powf|rnd|sin|sqrt|str|strlen|sysinfo|tan|vartype|varuse|varptr|varsize)(@\\S*)?$",
+          "match": "(?i)^(abs|absf|atan|stan|callfunc|cos|dirinfo|double|expf|getease|geteasef|gettime|ginfo|int|length|length2|length3|length4|libptr|limit|limitf|logf|objinfo|powf|rnd|sin|sqrt|str|strlen|sysinfo|tan|vartype|varuse|varptr|varsize)(@\\S*)?$",
           "captures": {
             "1": {
               "name": "keyword.hsp3"
@@ -1217,7 +1217,7 @@
         },
         {
           "comment": "文字列操作",
-          "match": "(?i)^(cnvstoa|cnvstow|getstr|noteadd|notedel|noteget|noteload|notesave|notesel|noteunsel|split|strrep|cnvatos|cnvwtos|getpath|instr|notefind|noteinfo|strf|strmid|strtrim)(@\\S*)?$",
+          "match": "(?i)^(cnvstoa|cnvstow|getstr|noteadd|notedel|noteget|noteload|notesave|notesel|noteunsel|sortnote|split|strrep|cnvatos|cnvwtos|getpath|instr|notefind|noteinfo|strf|strmid|strtrim)(@\\S*)?$",
           "captures": {
             "1": {
               "name": "keyword.hsp3"
@@ -1229,7 +1229,7 @@
         },
         {
           "comment": "標準定義マクロ",
-          "match": "(?i)^(__date__|__file__|__hsp30__|__hspver__|__line__|__time__|_debug|and|deg2rad|font_antialias|font_bold|font_italic|font_normal|font_strikeout|font_underline|gmode_add|gmode_alpha|gmode_gdi|gmode_mem|gmode_pixela|gmode_rgb0|gmode_rgb0alpha|gmode_sub|not|objinfo_bmscr|objinfo_hwnd|objinfo_mode|objmode_guifont|objmode_normal|objmode_usefont|or|rad2deg|screen_fixedsize|screen_frame|screen_hide|screen_normal|screen_palette|screen_tool|xor)(@\\S*)?$",
+          "match": "(?i)^(__date__|__file__|__hsp30__|__hspver__|__line__|__time__|_debug|__hspdef__|and|deg2rad|font_antialias|font_bold|font_italic|font_normal|font_strikeout|font_underline|gmode_add|gmode_alpha|gmode_gdi|gmode_mem|gmode_pixela|gmode_rgb0|gmode_rgb0alpha|gmode_sub|not|objinfo_bmscr|objinfo_hwnd|objinfo_mode|objmode_guifont|objmode_normal|objmode_usefont|or|rad2deg|screen_fixedsize|screen_frame|screen_hide|screen_normal|screen_palette|screen_tool|xor|gsquare_grad|ease_linear|ease_quad_in|ease_quad_out|ease_quad_inout|ease_cubic_in|ease_cubic_out|ease_cubic_inout|ease_quartic_in|ease_quartic_out|ease_quartic_inout|ease_bounce_in|ease_bounce_out|ease_bounce_inout|ease_shake_in|ease_shake_out|ease_shake_inout|ease_loop|notefind_match|notefind_first|notefind_instr)(@\\S*)?$",
           "captures": {
             "1": {
               "name": "constant.language.hsp3"
@@ -1253,7 +1253,7 @@
         },
         {
           "comment": "画面制御命令",
-          "match": "(?i)^(axobj|bgscr|bmpsave|boxf|buffer|celdiv|celload|celput|chgdisp|circle|cls|color|dialog|font|gcopy|gmode|grect|groll|grotate|gsel|gsquare|gzoom|hsvcolor|line|mes|palcolor|palette|pget|picload|pos|print|pset|redraw|screen|sendmsg|syscolor|sysfont|title|width|winobj)(@\\S*)?$",
+          "match": "(?i)^(axobj|bgscr|bmpsave|boxf|buffer|celdiv|celload|celput|chgdisp|circle|cls|color|dialog|font|gcopy|gmode|grect|gradf|groll|grotate|gsel|gsquare|gzoom|hsvcolor|line|mes|palcolor|palette|pget|picload|pos|print|pset|redraw|screen|sendmsg|syscolor|sysfont|title|width|winobj)(@\\S*)?$",
           "captures": {
             "1": {
               "name": "keyword.hsp3"
