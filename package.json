@@ -1,7 +1,7 @@
 {
   "name": "language-hsp3",
   "main": "./lib/main",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "HSP3 syntax highlighting and compile task support for ATOM",
   "keywords": [
     "language",
