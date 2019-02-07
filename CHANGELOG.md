@@ -9,6 +9,9 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+## 0.2.1 - 2019-02-07
+- *fix* ハイライトされていないキーワードを発見して、ハイライトされるように修正しました。
+
 ## 0.2.0 - 2018-11-16
 - *upgrade* grammarsフォルダのファイルたちの更新が完了しました。
 - *feat* labelが位置定義以外でもハイライトされます。
