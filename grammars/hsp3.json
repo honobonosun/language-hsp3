@@ -748,7 +748,7 @@
              "name": "invalid.deprecated.hsp3"
            }
          }
-       } 
+       }
       ]
     },
     "pp_deffunc_argument": {
@@ -880,12 +880,20 @@
           "captures": {"1": {"name": "constant.numeric.hex.hsp3"}}
         },
         { "comment": "文字コード",
-          "match": "(?i)'(?:((?:\\\\|¥)[¥\\\\nrt\"'])|[^'])?(.*)'",
+          "match": "(?i)'(?:((?:\\\\|¥)[¥\\\\nrt\"'])|([^']))?(.*?)'",
           "captures": {
             "1": {
               "name": "constant.character.escape.hsp3"
             },
             "2": {
+              "patterns": [
+                {
+                  "match": "\\\\|¥",
+                  "name": "invalid.illegal.hsp3"
+                }
+              ]
+            },
+            "3": {
               "name": "invalid.deprecated.hsp3"
             }
           },
@@ -1012,12 +1020,12 @@
     },
     "doubleToken": {
       "patterns": [
-        
+
       ]
     },
     "tripleToken": {
       "patterns": [
-        
+
       ]
     },
     "keywords": {

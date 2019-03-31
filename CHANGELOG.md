@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+## 0.2.2 - 2019-03-31
+- *fix* シングルクォーテーションのハイライトが貪欲になるのを修正しました。[#9](https://github.com/honobonosun/language-hsp3/issues/9)
+- *add* シングルクォーテーション内でエスケープシーケンスがおかしい場合、invalid.illegal でハイライトされるように機能追加しました。
+
 ## 0.2.1 - 2019-02-07
 - *fix* ハイライトされていないキーワードを発見して、ハイライトされるように修正しました。[#5](https://github.com/honobonosun/language-hsp3/issues/5#issuecomment-461335167)
 
