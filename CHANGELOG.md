@@ -9,14 +9,18 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-## 0.2.2 - 2019-03-31
+## 0.3.0 - 2019/05/04
+- *add* 自動でインデントをアップ・ダウンする機能を設定しました。
+  - この変更を戻すには、このパッケージの/settings/hsp3.csonファイルの `autoIndentOnPaste`,`increaseIndentPattern`,`decreaseIndentPattern` オブジェクトを削除してください。良く分からない場合、7行目から21行目のすべてを削除して頂ければ大丈夫です。
+
+## 0.2.2 - 2019/03/31
 - *fix* シングルクォーテーションのハイライトが貪欲になるのを修正しました。[#9](https://github.com/honobonosun/language-hsp3/issues/9)
 - *add* シングルクォーテーション内でエスケープシーケンスがおかしい場合、invalid.illegal でハイライトされるように機能追加しました。
 
-## 0.2.1 - 2019-02-07
+## 0.2.1 - 2019/02/07
 - *fix* ハイライトされていないキーワードを発見して、ハイライトされるように修正しました。[#5](https://github.com/honobonosun/language-hsp3/issues/5#issuecomment-461335167)
 
-## 0.2.0 - 2018-11-16
+## 0.2.0 - 2018/11/16
 - *upgrade* grammarsフォルダのファイルたちの更新が完了しました。
 - *feat* labelが位置定義以外でもハイライトされます。
 - *update* トークンの認識方法を変更しました。
@@ -37,21 +41,21 @@ All notable changes to this project will be documented in this file.
 - *fix* [トークンが59文字以上になると、"invalid.deprecated.hsp3"スコープ名でハイライトされるように修正しました。](https://github.com/honobonosun/language-hsp3/issues/4)
 - *fix* ユーザー定義名の最初の文字が全角の数字でも、"invalid.illegal.hsp3"スコープ名でハイライトされた問題を修正しました。
 
-## 0.1.7 - 2018-11-02
+## 0.1.7 - 2018/11/02
 - chell-uoxou様の[プルリクエスト #8](https://github.com/honobonosun/language-hsp3/pull/8)をマージしました。
   - 空白文字を含むパスをhspc.exeに渡せない問題が解決します。
   - exec関数とexecFile関数の切り替えをパッケージ設定画面からできるように変更しました。
 - *dev* coffeelint.jsonを追加しました。
   - パッケージ開発者は、node.jsのcoffeelintを導入することで、linterの支援を受けられます。
 
-## 0.1.6 - 2018-05-06
+## 0.1.6 - 2018/05/06
 - ユーザー定義名とモジュール名で、入れ子名前空間の記入に対応しました。
 
-## 0.1.5 - 2018-04-30
+## 0.1.5 - 2018/04/30
 - モジュール名に複数の名前空間を記入すると正しく認識できない問題を修正しました。
 - ユーザー定義名に複数の名前空間を記入すると正しく認識できない問題を修正しました。
 
-## 0.1.4 - 2018-04-08
+## 0.1.4 - 2018/04/08
 - Ubuntu環境でShift_JISエンコードのファイルを開いたとき、\\文字が¥文字に置き換えられて、マクロの改行を認識できない問題を修正しました。
 - hsファイルの内部スコープを`source.hs`から`text.hs`に変更しました。
 - モジュール名に名前空間を記入すると`invalid.illegal`でハイライトされる問題を修正しました。
@@ -59,14 +63,14 @@ All notable changes to this project will be documented in this file.
 ## 0.1.3
 - `apm publish patch`コマンドのリトライ。
 
-## 0.1.2 - 2018-03-10
+## 0.1.2 - 2018/03/10
 - HSP3.5で追加された\#packoptのicon,lang,versionオプションを認識できない問題を修正しました。
 - \#defineで名前空間がハイライトされない問題を修正しました。
 
-## 0.1.1 - 2018-02-18
+## 0.1.1 - 2018/02/18
 - 設定テキストの誤記を修正しました。
 
-## 0.1.0 - 2018-02-16
+## 0.1.0 - 2018/02/16
 - 将来のhspcのアップデートに対応するために、引数の引き渡し方法を変更しました。
 - 他のツールを使用できるようになりました。
   - ツール側が返す文字は、Shift_JISであることをパッケージは期待します。しかし、それが望めない場合、パッケージは任意のフォーマットでデコードすることで、解決を試みます。
@@ -79,5 +83,5 @@ All notable changes to this project will be documented in this file.
 ## 0.0.3
 - ss.pngファイルのパスをgithubに変更。
 
-## 0.0.1 - 2018-01-04
+## 0.0.1 - 2018/01/04
 - 初ベータリリース。

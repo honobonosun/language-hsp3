@@ -4,6 +4,21 @@
   editor:
     commentStart: '/* '
     commentEnd  : ' */'
+    autoIndentOnPaste: false
+    increaseIndentPattern: '(?x)
+      ^\\s*
+      (
+        .*\\{\\s*$
+        | \\*[^:]*$
+        | \\#(if|ifdef|ifndef).*$
+        | \\#module.*$
+        | \\#(def|mod)c?func.*$
+        | \\#mod(init|term).*$
+        | \\#(define|const|enum).*(\\\\|¥)$
+        | \\#(com)?(c?func).*(\\\\|¥)$
+        | (repeat|foreach|for|do|while)[^:]*$
+      )'
+    decreaseIndentPattern: '^\\s*(\\}|#endif|#global|return|loop|next|(until.*)|wend)$'
 ###
   autocomplete:
     symbols:
