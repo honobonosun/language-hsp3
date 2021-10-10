@@ -9,6 +9,9 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+## 0.4.1 - 2021/10/10
+- *fix* readme.mdの年月を修正しました。
+
 ## 0.4.0 - 2021/10/10
 - *add* HSP3.6の構文ハイライトに対応しました。
 - *update* インデントルールを変更しました。
