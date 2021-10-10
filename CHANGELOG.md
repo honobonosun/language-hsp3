@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+## 0.4.0 - 2021/10/10
+- *add* HSP3.6の構文ハイライトに対応しました。
+- *update* インデントルールを変更しました。
+- *fix* パッケージの依存関係をアップデートしました。
+
 ## 0.3.0 - 2019/05/04
 - *add* 自動でインデントをアップ・ダウンする機能を設定しました。
   - この変更を戻すには、このパッケージの/settings/hsp3.csonファイルの `autoIndentOnPaste`,`increaseIndentPattern`,`decreaseIndentPattern` オブジェクトを削除してください。良く分からない場合、7行目から21行目のすべてを削除して頂ければ大丈夫です。

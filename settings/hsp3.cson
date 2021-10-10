@@ -1,61 +1,28 @@
 # If you want some examples of settings, check out:
 # https://github.com/atom/language-gfm/blob/master/settings/gfm.cson
+# https://github.com/atom/language-coffee-script/blob/d86c8963dcee0ab811da05a175b2218045d0c124/settings/language-coffee-script.cson
 '.source.hsp3':
   editor:
+    #tabLength: 2
+    #tabType: "soft"
+    autoIndentOnPaste: false
     commentStart: '/* '
     commentEnd  : ' */'
-    autoIndentOnPaste: false
+    nonWordCharacters: '/\\()"\':,.;<>~!#%^&*|+=[]{}?-…'
+    foldEndPattern: '(\\*/|^\\s*(\\}|\\]|\\)))'
     increaseIndentPattern: '(?x)
-      ^\\s*
-      (
-        .*\\{\\s*$
-        | \\*[^:]*$
-        | \\#(if|ifdef|ifndef).*$
-        | \\#module.*$
-        | \\#(def|mod)c?func.*$
-        | \\#mod(init|term).*$
-        | \\#(define|const|enum).*(\\\\|¥)$
-        | \\#(com)?(c?func).*(\\\\|¥)$
-        | (repeat|foreach|for|do|while)[^:]*$
-      )'
-    decreaseIndentPattern: '^\\s*(\\}|#endif|#global|return|loop|next|(until.*)|wend)$'
-###
-  autocomplete:
-    symbols:
-      module:
-        selector: '.name.module'
-      property:
-        selector: 'variable.other.module'
-      import:
-        selector: 'name.comfunc, name.cmd, name.func'
-      keyword:
-        selector: '.name.define'
-      constant:
-        selector: '.name.const, .name.enum'
-      function:
-        selector: '.name.deffunc, name.modfunc'
-      '': # the catch-all
-        selector: '.rule.symbol'
-        typePriority: 0
-      type:
-        suggestions: [
-          # AHT
-          'class','name','author','ver','exp','icon','iconid',
-          # bootopt
-          'notime','utf8','hsp64',
-          # packopt
-          'runtime','type','xsize','ysize','hide','orgpath',
-          # cmpopt
-          'ppout','optcode','optinfo','varname','varinit','optprm','skipjpspc',
-          'utf8',
-          # ユーザ定義
-          'const','enum','define','deffunc','defcfunc','module','modinit',
-          'modterm','modfunc','modcfunc',
-          # COM,DLL
-          'comfunc','cmd',
-          # 引数型
-          'local','global','ctype',
-          'int','double','str','label','var','array'
-        ]
-        typePriority: -1
-###
+      ^.*\\{
+      | (^\\s*
+        repeat
+      | for
+      | do
+      | while
+      | \\*)
+    '
+    decreaseIndentPattern: '(?x)
+        ^\\s*\\}
+      | loop
+      | next
+      | until.*
+      | wend
+    '
