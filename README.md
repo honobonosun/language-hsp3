@@ -112,7 +112,7 @@ hspcは、コードページが統一されているのを前提に処理しま�
 ## 使用したコードとライセンス表記
 ### language-hsp3
 MIT License  
-Copyright (c) 2017-2018 Honobono
+Copyright (c) 2017-2021 Honobono
 
 ### iconv-lite
 MIT License  
